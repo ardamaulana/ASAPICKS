@@ -782,162 +782,145 @@
         </div>
 
 
-        <!-- UPLOAD CARD -->
+        <!-- DRIVE UPLOAD CARD -->
 
-        <div
-          class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
+<div
+  class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
 
-          <div
-            class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+  <div
+    class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
 
-            <div>
+    <!-- INFO -->
 
-              <h3 class="font-bold text-slate-900">
-                Tambahkan Foto
-              </h3>
+    <div class="flex gap-3">
 
-              <p class="text-xs text-slate-500 mt-1 leading-5">
-                Pilih banyak foto sekaligus. Foto akan diunggah
-                ke Google Drive dan otomatis masuk ke database proyek.
-              </p>
+      <div
+        class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
 
-            </div>
+        <i
+          data-lucide="folder-up"
+          class="w-5 h-5 text-emerald-600">
+        </i>
 
-            <div
-              class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-[10px] font-bold">
+      </div>
 
-              GOOGLE DRIVE
+      <div>
 
-            </div>
+        <h3 class="font-bold text-slate-900">
+          Upload Foto
+        </h3>
 
-          </div>
+        <p
+          class="text-xs text-slate-500 mt-1 leading-5">
 
+          Upload foto langsung ke folder
+          Google Drive client. Setelah selesai,
+          klik Refresh agar foto muncul di ASA PICKS.
 
-          <div
-            class="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 mt-5">
+        </p>
 
-            <div>
+      </div>
 
-              <label
-                for="input-photo-category"
-                class="block text-xs font-bold text-slate-600 mb-2">
-
-                Kategori Foto
-
-              </label>
-
-              <input
-                type="text"
-                id="input-photo-category"
-                placeholder="Contoh: Akad, Resepsi, Couple"
-                class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-4 focus:ring-indigo-100 focus:border-indigo-600 outline-none">
-
-            </div>
+    </div>
 
 
-            <div class="flex items-end">
+    <!-- DRIVE BADGE -->
 
-              <button
-                type="button"
-                onclick="app.addPhotoManual()"
-                class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-3 rounded-xl text-sm transition flex items-center justify-center gap-2">
+    <div
+      class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-[10px] font-bold shrink-0">
 
-                <i
-                  data-lucide="upload-cloud"
-                  class="w-4 h-4">
-                </i>
+      GOOGLE DRIVE
 
-                Pilih Foto
+    </div>
 
-              </button>
-
-            </div>
-
-          </div>
+  </div>
 
 
-          <!-- UPLOAD PROGRESS -->
+  <!-- DRIVE ACTIONS -->
 
-          <div
-            id="upload-progress-container"
-            class="hidden mt-5 p-4 rounded-xl bg-slate-50 border border-slate-200">
+  <div
+    class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
 
-            <div
-              class="flex items-center justify-between mb-2">
+    <!-- OPEN DRIVE -->
 
-              <span
-                id="upload-progress-text"
-                class="text-xs font-bold text-slate-700">
+    <button
+      type="button"
+      onclick="app.openProjectDriveFolder()"
+      class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-xl text-sm transition flex items-center justify-center gap-2">
 
-                Mengunggah...
+      <i
+        data-lucide="folder-open"
+        class="w-4 h-4">
+      </i>
 
-              </span>
+      Buka Folder Google Drive
 
-              <span
-                id="upload-progress-percent"
-                class="text-xs font-bold text-indigo-600">
-
-                0%
-
-              </span>
-
-            </div>
-
-            <div
-              class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-
-              <div
-                id="upload-progress-bar"
-                class="h-full bg-indigo-600 rounded-full transition-all duration-300"
-                style="width:0%">
-
-              </div>
-
-            </div>
-
-            <div
-              id="upload-current-file"
-              class="text-[10px] text-slate-400 mt-2 truncate">
-
-              -
-
-            </div>
-
-          </div>
+    </button>
 
 
-          <!-- INFO -->
+    <!-- REFRESH -->
 
-          <div
-            class="mt-5 bg-indigo-50 border border-indigo-100 rounded-xl p-3.5">
+    <button
+      type="button"
+      onclick="app.refreshAdminPhotos()"
+      class="w-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold px-5 py-3 rounded-xl text-sm transition flex items-center justify-center gap-2">
 
-            <div class="flex gap-3">
+      <i
+        data-lucide="refresh-cw"
+        class="w-4 h-4">
+      </i>
 
-              <i
-                data-lucide="info"
-                class="w-4 h-4 text-indigo-600 mt-0.5 shrink-0">
-              </i>
+      Refresh Foto
 
-              <div
-                class="text-[11px] text-indigo-700 leading-5">
+    </button>
 
-                <p class="font-bold">
-                  Upload massal
-                </p>
+  </div>
 
-                <p>
-                  Kamu dapat memilih puluhan hingga ratusan foto.
-                  Foto diproses satu per satu agar lebih stabil
-                  saat dikirim ke Google Apps Script.
-                </p>
 
-              </div>
+  <!-- HOW TO -->
 
-            </div>
+  <div
+    class="mt-5 bg-indigo-50 border border-indigo-100 rounded-xl p-3.5">
 
-          </div>
+    <div class="flex gap-3">
 
-        </div>
+      <i
+        data-lucide="info"
+        class="w-4 h-4 text-indigo-600 mt-0.5 shrink-0">
+      </i>
+
+      <div
+        class="text-[11px] text-indigo-700 leading-5">
+
+        <p class="font-bold">
+          Cara upload foto
+        </p>
+
+        <p class="mt-0.5">
+          1. Klik
+          <b>Buka Folder Google Drive</b>.
+        </p>
+
+        <p>
+  2. Drag dan drop semua foto ke folder tersebut.
+</p>
+
+        <p>
+          3. Tunggu sampai upload Google Drive selesai.
+        </p>
+
+        <p>
+          4. Kembali ke ASA PICKS dan klik
+          <b>Refresh Foto</b>.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 
 
         <!-- PHOTO TOOLBAR -->
@@ -1020,19 +1003,17 @@
 
 
             <button
-              type="button"
-              id="btn-download-selected"
-              onclick="app.downloadSelectedPhotos()"
-              class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-3 rounded-xl text-sm transition flex items-center justify-center gap-2">
+  type="button"
+  onclick="app.downloadSelectedPhotos('${project.id}')"
+  title="Lihat Folder Foto Terpilih"
+  class="p-2 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition">
 
-              <i
-                data-lucide="download"
-                class="w-4 h-4">
-              </i>
+  <i
+    data-lucide="folder-open"
+    class="w-4 h-4">
+  </i>
 
-              Download Semua Foto Terpilih
-
-            </button>
+</button>
 
           </div>
 
@@ -3337,19 +3318,19 @@ ${
   completed
     ? `
       <button
-        type="button"
-        onclick='app.downloadSelectedPhotos(${JSON.stringify(String(project.id))})'
-        title="Download Foto Terpilih"
-        class="p-2 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition">
+  type="button"
+  onclick='app.downloadSelectedPhotos(${JSON.stringify(String(project.id))})'
+  title="Lihat Folder Foto Terpilih"
+  class="p-2 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition">
 
-        <i
-          data-lucide="download"
-          class="w-4 h-4">
-        </i>
+  <i
+    data-lucide="folder-open"
+    class="w-4 h-4">
+  </i>
 
-      </button>
+</button>
     `
-    : ''
+: ''
 }
 
 
@@ -3541,11 +3522,27 @@ Terima kasih dan selamat memilih foto!
 
       },
 
-      async downloadSelectedPhotos() {
+      async downloadSelectedPhotos(projectId = null) {
 
-  const project =
-    state.currentProject;
+  let project = null;
 
+  if (projectId) {
+
+    project =
+      state.projects.find(
+        item =>
+          String(item.id) ===
+          String(projectId)
+      );
+
+  }
+
+  if (!project && state.currentProject) {
+
+    project =
+      state.currentProject;
+
+  }
 
   if (!project || !project.id) {
 
@@ -3558,16 +3555,53 @@ Terima kasih dan selamat memilih foto!
   }
 
 
-  const selectedCount =
-    state.adminSelectedPhotoIds
-      ? state.adminSelectedPhotoIds.size
-      : 0;
+  console.log(
+    'OPEN SELECTED FOLDER PROJECT:',
+    project.id
+  );
 
 
-  if (selectedCount === 0) {
+  /*
+    Pastikan folder foto terpilih
+    sudah tersedia di Google Drive.
+  */
 
-    alert(
-      'Belum ada foto yang dipilih client.'
+  const result =
+    await apiCall(
+      'downloadSelectedPhotos',
+      {
+        projectId:
+          project.id
+      }
+    );
+
+
+  console.log(
+    'SELECTED FOLDER RESULT:',
+    result
+  );
+
+
+  if (!result.ok) {
+
+    return;
+
+  }
+
+
+  /*
+    Buka folder Olan - Selected
+    di Google Drive.
+  */
+
+  if (
+    result.data &&
+    result.data.url
+  ) {
+
+    window.open(
+      result.data.url,
+      '_blank'
     );
 
     return;
@@ -3575,129 +3609,9 @@ Terima kasih dan selamat memilih foto!
   }
 
 
-  console.log(
-    'DOWNLOAD SELECTED PHOTOS:',
-    project.id
+  alert(
+    'Folder foto terpilih berhasil disiapkan, tetapi link folder tidak ditemukan.'
   );
-
-
-  const button =
-    document.getElementById(
-      'btn-download-selected'
-    );
-
-
-  if (button) {
-
-    button.disabled = true;
-
-    button.classList.add(
-      'opacity-60',
-      'cursor-not-allowed'
-    );
-
-    button.innerHTML = `
-
-      <i
-        data-lucide="loader-2"
-        class="w-4 h-4 animate-spin">
-      </i>
-
-      Membuat ZIP...
-
-    `;
-
-    lucide.createIcons();
-
-  }
-
-
-  try {
-
-    const result =
-      await apiCall(
-        'downloadSelectedPhotos',
-        {
-          projectId:
-            project.id
-        }
-      );
-
-
-    console.log(
-      'DOWNLOAD RESULT:',
-      result
-    );
-
-
-    if (!result.ok) {
-
-      alert(
-        result.message ||
-        'Gagal membuat ZIP foto terpilih.'
-      );
-
-      return;
-
-    }
-
-
-    if (
-      result.data &&
-      result.data.url
-    ) {
-
-      window.open(
-        result.data.url,
-        '_blank'
-      );
-
-    } else {
-
-      alert(
-        'ZIP berhasil dibuat, tetapi link download tidak ditemukan.'
-      );
-
-    }
-
-  } catch (error) {
-
-    console.error(
-      'DOWNLOAD ZIP ERROR:',
-      error
-    );
-
-    alert(
-      'Terjadi kesalahan saat membuat ZIP.'
-    );
-
-  } finally {
-
-    if (button) {
-
-      button.disabled = false;
-
-      button.classList.remove(
-        'opacity-60',
-        'cursor-not-allowed'
-      );
-
-      button.innerHTML = `
-
-        <i
-          data-lucide="download"
-          class="w-4 h-4">
-        </i>
-
-        Download Semua Foto Terpilih
-
-      `;
-
-      lucide.createIcons();
-
-    }
-
-  }
 
 },
 
@@ -3899,6 +3813,53 @@ if (selectedCountElement) {
 
       },
 
+openProjectDriveFolder() {
+
+  const project =
+    state.currentProject;
+
+  console.log(
+    'OPEN DRIVE FOLDER PROJECT:',
+    project
+  );
+
+  if (!project) {
+
+    alert(
+      'Proyek belum dipilih.'
+    );
+
+    return;
+
+  }
+
+  if (!project.driveFolderId) {
+
+    alert(
+      'Folder Google Drive untuk proyek ini belum tersedia.'
+    );
+
+    return;
+
+  }
+
+  const url =
+    'https://drive.google.com/drive/folders/' +
+    encodeURIComponent(
+      project.driveFolderId
+    );
+
+  console.log(
+    'OPEN DRIVE URL:',
+    url
+  );
+
+  window.open(
+    url,
+    '_blank'
+  );
+
+},
 
       renderAdminPhotoGrid() {
 
