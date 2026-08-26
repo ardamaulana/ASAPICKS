@@ -1,0 +1,5036 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full bg-slate-50">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>ASA PICKS — ASA MOMENTS</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Font -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, .82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .photo-card {
+      transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        border-color .25s ease;
+    }
+
+    .photo-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .photo-card.selected {
+      box-shadow:
+        0 0 0 3px rgba(79, 70, 229, .15),
+        0 12px 30px rgba(79, 70, 229, .12);
+    }
+
+    .photo-card img {
+      transition: transform .4s ease;
+    }
+
+    .photo-card:hover img {
+      transform: scale(1.045);
+    }
+
+    .loading-spinner {
+      border: 3px solid rgba(79, 70, 229, .15);
+      border-top-color: #4f46e5;
+      animation: spin .8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .modal-enter {
+      animation: modalEnter .2s ease-out;
+    }
+
+    @keyframes modalEnter {
+      from {
+        opacity: 0;
+        transform: scale(.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn .25s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+
+<body class="min-h-full text-slate-800 antialiased">
+
+  <!-- =========================================================
+       APP
+  ========================================================== -->
+
+  <div id="app" class="min-h-screen flex flex-col">
+
+    <!-- =======================================================
+         NAVBAR
+    ======================================================== -->
+
+    <header class="sticky top-0 z-40 border-b border-slate-200/80 glass">
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="h-16 flex items-center justify-between">
+
+          <!-- BRAND -->
+
+          <button
+            type="button"
+            onclick="app.goHome()"
+            class="flex items-center gap-3 text-left">
+
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+
+              <span class="font-extrabold tracking-tight">
+                AP
+              </span>
+
+            </div>
+
+            <div>
+
+              <div class="font-extrabold tracking-tight text-slate-900 leading-none">
+                ASA PICKS
+              </div>
+
+              <div class="text-[9px] font-bold text-indigo-600 tracking-[.18em] uppercase mt-1">
+                ASA MOMENTS
+              </div>
+
+            </div>
+
+          </button>
+
+
+          <!-- NAV ACTION -->
+
+          <div id="nav-actions" class="flex items-center gap-3"></div>
+
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <!-- =======================================================
+         MAIN
+    ======================================================== -->
+
+    <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+
+      <!-- =====================================================
+           CLIENT PORTAL
+      ====================================================== -->
+
+      <section
+        id="view-portal"
+        class="max-w-md mx-auto py-8 sm:py-16">
+
+        <div
+          class="bg-white rounded-[2rem] border border-slate-200 shadow-xl shadow-slate-200/50 p-7 sm:p-9">
+
+          <div class="text-center">
+
+            <div
+              class="w-16 h-16 mx-auto rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-6">
+
+              <i data-lucide="images" class="w-8 h-8"></i>
+
+            </div>
+
+            <p class="text-[10px] font-bold tracking-[.2em] uppercase text-indigo-600 mb-2">
+              ASA MOMENTS
+            </p>
+
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+              ASA PICKS
+            </h1>
+
+            <p class="text-sm text-slate-500 mt-3 leading-6">
+              Pilih foto favorit Anda dari galeri dokumentasi
+              yang telah disiapkan oleh tim ASA MOMENTS.
+            </p>
+
+          </div>
+
+
+          <!-- LOGIN FORM -->
+
+          <form
+            onsubmit="app.handleClientLogin(event)"
+            class="mt-8 space-y-4">
+
+            <div>
+
+              <label
+                for="client-pin"
+                class="block text-xs font-bold text-slate-600 mb-2">
+
+                PIN GALERI
+
+              </label>
+
+              <input
+                type="text"
+                id="client-pin"
+                maxlength="6"
+                inputmode="numeric"
+                autocomplete="off"
+                placeholder="Contoh: 123456"
+                class="w-full text-center text-xl tracking-[.35em] font-bold py-4 px-4 rounded-2xl border border-slate-300 focus:ring-4 focus:ring-indigo-100 focus:border-indigo-600 outline-none transition">
+
+            </div>
+
+
+            <button
+              type="submit"
+              id="btn-portal-submit"
+              class="w-full bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold py-4 px-4 rounded-2xl shadow-lg shadow-indigo-200 transition flex items-center justify-center gap-2">
+
+              <span>Buka Galeri</span>
+
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+
+            </button>
+
+          </form>
+
+
+          <!-- INFO -->
+
+          <div
+            class="mt-7 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+
+            <div class="flex gap-3">
+
+              <i
+                data-lucide="shield-check"
+                class="w-5 h-5 text-indigo-600 shrink-0">
+              </i>
+
+              <div>
+
+                <p class="text-xs font-bold text-slate-700">
+                  Galeri privat
+                </p>
+
+                <p class="text-[11px] text-slate-500 mt-1 leading-5">
+                  Gunakan PIN yang diberikan oleh tim
+                  ASA MOMENTS untuk mengakses galeri Anda.
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- ADMIN -->
+
+          <div
+            class="mt-7 pt-6 border-t border-slate-100 text-center">
+
+            <button
+              type="button"
+              onclick="app.navigate('admin-login')"
+              class="text-xs font-bold text-slate-400 hover:text-indigo-600 transition">
+
+              Akses Portal Fotografer / Admin
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           CLIENT GALLERY
+      ====================================================== -->
+
+      <section
+        id="view-client-gallery"
+        class="hidden space-y-5">
+
+        <div
+          class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6">
+
+          <div
+            class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+
+            <div>
+
+              <div
+                class="flex flex-wrap items-center gap-2 text-[11px] font-semibold text-slate-400 mb-2">
+
+                <span id="client-gallery-date">-</span>
+
+                <span>•</span>
+
+                <span id="client-gallery-phone">-</span>
+
+              </div>
+
+              <h2
+                id="client-gallery-title"
+                class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+
+                Galeri Foto
+
+              </h2>
+
+              <p
+                id="client-gallery-subtitle"
+                class="text-sm text-slate-500 mt-1">
+
+                -
+
+              </p>
+
+            </div>
+
+
+            <!-- SELECTION -->
+
+            <div
+              class="flex items-center justify-between sm:justify-end gap-4 bg-slate-50 rounded-2xl border border-slate-100 p-3.5">
+
+              <div>
+
+                <p
+                  class="text-[10px] uppercase tracking-wider font-bold text-slate-400">
+
+                  Foto Dipilih
+
+                </p>
+
+                <p
+                  class="text-lg font-extrabold text-indigo-600">
+
+                  <span id="count-selected">0</span>
+
+                  <span class="text-slate-300">/</span>
+
+                  <span id="count-limit">Tanpa Batas</span>
+
+                </p>
+
+              </div>
+
+
+              <button
+                type="button"
+                id="btn-submit-selection"
+                onclick="app.submitSelections()"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 sm:px-5 py-3 rounded-xl shadow-md shadow-indigo-100 transition flex items-center gap-2">
+
+                <i data-lucide="send" class="w-4 h-4"></i>
+
+                <span>Kirim</span>
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- INSTRUCTION -->
+
+        <div
+          class="bg-indigo-50 border border-indigo-100 rounded-2xl p-4">
+
+          <div class="flex gap-3">
+
+            <i
+              data-lucide="mouse-pointer-click"
+              class="w-5 h-5 text-indigo-600 shrink-0">
+            </i>
+
+            <div>
+
+              <p class="text-xs font-bold text-indigo-800">
+                Pilih foto favorit Anda
+              </p>
+
+              <p class="text-[11px] text-indigo-600 mt-1">
+                Klik foto untuk memilih. Klik kembali untuk membatalkan pilihan.
+                Anda juga dapat membuka foto dalam ukuran penuh.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- FILTER -->
+
+        <div
+          id="category-filters"
+          class="flex gap-2 overflow-x-auto pb-1 hide-scrollbar">
+        </div>
+
+
+        <!-- PHOTO GRID -->
+
+        <div
+          id="client-photo-grid"
+          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           ADMIN LOGIN
+      ====================================================== -->
+
+      <section
+        id="view-admin-login"
+        class="hidden max-w-md mx-auto py-8 sm:py-16">
+
+        <div
+          class="bg-white p-7 sm:p-9 rounded-[2rem] border border-slate-200 shadow-xl shadow-slate-200/50">
+
+          <div class="text-center">
+
+            <div
+              class="w-16 h-16 bg-slate-100 text-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-6">
+
+              <i data-lucide="shield-check" class="w-8 h-8"></i>
+
+            </div>
+
+            <h2 class="text-2xl font-extrabold text-slate-900">
+              Portal Fotografer
+            </h2>
+
+            <p class="text-sm text-slate-500 mt-2">
+              Kelola proyek dan galeri ASA MOMENTS.
+            </p>
+
+          </div>
+
+
+          <form
+            onsubmit="app.handleAdminLogin(event)"
+            class="mt-8 space-y-4">
+
+            <input
+              type="password"
+              id="admin-password"
+              autocomplete="current-password"
+              placeholder="Kata Sandi Admin"
+              class="w-full text-center text-lg py-4 px-4 rounded-2xl border border-slate-300 focus:ring-4 focus:ring-slate-100 focus:border-slate-900 outline-none transition">
+
+            <button
+              type="submit"
+              class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-4 rounded-2xl transition">
+
+              Masuk Dashboard
+
+            </button>
+
+          </form>
+
+
+          <div class="mt-6 text-center">
+
+            <button
+              type="button"
+              onclick="app.navigate('portal')"
+              class="text-xs font-semibold text-slate-400 hover:text-slate-700">
+
+              ← Kembali ke Portal Client
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           ADMIN DASHBOARD
+      ====================================================== -->
+
+      <section
+        id="view-admin-dashboard"
+        class="hidden space-y-6">
+
+        <!-- HEADER -->
+
+        <div
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
+          <div>
+
+            <p
+              class="text-xs font-bold text-indigo-600 uppercase tracking-wider">
+
+              ASA MOMENTS
+
+            </p>
+
+            <h2
+              class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
+
+              Dashboard Proyek
+
+            </h2>
+
+            <p class="text-sm text-slate-500 mt-1">
+              Kelola client, proyek, foto, dan pilihan client.
+            </p>
+
+          </div>
+
+
+          <button
+            type="button"
+            onclick="app.openModalProject()"
+            class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-indigo-100 transition">
+
+            <i data-lucide="plus" class="w-4 h-4"></i>
+
+            <span>Buat Proyek Baru</span>
+
+          </button>
+
+        </div>
+
+
+        <!-- STAT -->
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+
+          <div class="bg-white border border-slate-200 rounded-2xl p-4">
+
+            <p class="text-[10px] uppercase tracking-wider font-bold text-slate-400">
+              Total Proyek
+            </p>
+
+            <p
+              id="stat-total-projects"
+              class="text-2xl font-extrabold text-slate-900 mt-2">
+
+              0
+
+            </p>
+
+          </div>
+
+
+          <div class="bg-white border border-slate-200 rounded-2xl p-4">
+
+            <p class="text-[10px] uppercase tracking-wider font-bold text-slate-400">
+              Menunggu
+            </p>
+
+            <p
+              id="stat-waiting"
+              class="text-2xl font-extrabold text-amber-600 mt-2">
+
+              0
+
+            </p>
+
+          </div>
+
+
+          <div class="bg-white border border-slate-200 rounded-2xl p-4">
+
+            <p class="text-[10px] uppercase tracking-wider font-bold text-slate-400">
+              Selesai
+            </p>
+
+            <p
+              id="stat-completed"
+              class="text-2xl font-extrabold text-emerald-600 mt-2">
+
+              0
+
+            </p>
+
+          </div>
+
+
+          <div class="bg-white border border-slate-200 rounded-2xl p-4">
+
+            <p class="text-[10px] uppercase tracking-wider font-bold text-slate-400">
+              Akses Client
+            </p>
+
+            <p class="text-2xl font-extrabold text-indigo-600 mt-2">
+              PIN
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- TABLE -->
+
+        <div
+          class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+
+          <div
+            class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+
+            <div>
+
+              <h3 class="font-bold text-slate-900">
+                Daftar Proyek
+              </h3>
+
+              <p class="text-xs text-slate-400 mt-0.5">
+                Semua proyek ASA MOMENTS
+              </p>
+
+            </div>
+
+            <button
+              type="button"
+              onclick="app.loadAdminDashboard()"
+              class="p-2 rounded-lg hover:bg-slate-100 text-slate-500 transition">
+
+              <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+
+            </button>
+
+          </div>
+
+
+          <div class="overflow-x-auto">
+
+            <table
+              class="w-full text-left border-collapse min-w-[850px]">
+
+              <thead>
+
+                <tr
+                  class="bg-slate-50 border-b border-slate-200 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+
+                  <th class="py-3.5 px-4">
+                    Proyek / Event
+                  </th>
+
+                  <th class="py-3.5 px-4">
+                    Klien
+                  </th>
+
+                  <th class="py-3.5 px-4">
+                    PIN
+                  </th>
+
+                  <th class="py-3.5 px-4">
+                    Limit
+                  </th>
+
+                  <th class="py-3.5 px-4">
+                    Status
+                  </th>
+
+                  <th class="py-3.5 px-4 text-right">
+                    Aksi
+                  </th>
+
+                </tr>
+
+              </thead>
+
+              <tbody
+                id="projects-table-body"
+                class="divide-y divide-slate-100 text-sm">
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           ADMIN PHOTO MANAGEMENT
+      ====================================================== -->
+
+      <section
+        id="view-admin-photos"
+        class="hidden space-y-6">
+
+        <!-- HEADER -->
+
+        <div class="flex items-center gap-3">
+
+          <button
+            type="button"
+            onclick="app.navigate('admin-dashboard')"
+            class="p-2.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition">
+
+            <i
+              data-lucide="arrow-left"
+              class="w-5 h-5 text-slate-600">
+            </i>
+
+          </button>
+
+          <div>
+
+            <p
+              class="text-xs font-bold text-indigo-600 uppercase tracking-wider">
+
+              Kelola Galeri
+
+            </p>
+
+            <h2
+              id="manage-photos-title"
+              class="text-xl sm:text-2xl font-extrabold text-slate-900">
+
+              Foto Proyek
+
+            </h2>
+
+            <p
+              id="manage-photos-subtitle"
+              class="text-xs text-slate-500 mt-1">
+
+              -
+
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- UPLOAD CARD -->
+
+        <div
+          class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
+
+          <div
+            class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+
+            <div>
+
+              <h3 class="font-bold text-slate-900">
+                Tambahkan Foto
+              </h3>
+
+              <p class="text-xs text-slate-500 mt-1 leading-5">
+                Pilih banyak foto sekaligus. Foto akan diunggah
+                ke Google Drive dan otomatis masuk ke database proyek.
+              </p>
+
+            </div>
+
+            <div
+              class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-[10px] font-bold">
+
+              GOOGLE DRIVE
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 mt-5">
+
+            <div>
+
+              <label
+                for="input-photo-category"
+                class="block text-xs font-bold text-slate-600 mb-2">
+
+                Kategori Foto
+
+              </label>
+
+              <input
+                type="text"
+                id="input-photo-category"
+                placeholder="Contoh: Akad, Resepsi, Couple"
+                class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-4 focus:ring-indigo-100 focus:border-indigo-600 outline-none">
+
+            </div>
+
+
+            <div class="flex items-end">
+
+              <button
+                type="button"
+                onclick="app.addPhotoManual()"
+                class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-3 rounded-xl text-sm transition flex items-center justify-center gap-2">
+
+                <i
+                  data-lucide="upload-cloud"
+                  class="w-4 h-4">
+                </i>
+
+                Pilih Foto
+
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <!-- UPLOAD PROGRESS -->
+
+          <div
+            id="upload-progress-container"
+            class="hidden mt-5 p-4 rounded-xl bg-slate-50 border border-slate-200">
+
+            <div
+              class="flex items-center justify-between mb-2">
+
+              <span
+                id="upload-progress-text"
+                class="text-xs font-bold text-slate-700">
+
+                Mengunggah...
+
+              </span>
+
+              <span
+                id="upload-progress-percent"
+                class="text-xs font-bold text-indigo-600">
+
+                0%
+
+              </span>
+
+            </div>
+
+            <div
+              class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+
+              <div
+                id="upload-progress-bar"
+                class="h-full bg-indigo-600 rounded-full transition-all duration-300"
+                style="width:0%">
+
+              </div>
+
+            </div>
+
+            <div
+              id="upload-current-file"
+              class="text-[10px] text-slate-400 mt-2 truncate">
+
+              -
+
+            </div>
+
+          </div>
+
+
+          <!-- INFO -->
+
+          <div
+            class="mt-5 bg-indigo-50 border border-indigo-100 rounded-xl p-3.5">
+
+            <div class="flex gap-3">
+
+              <i
+                data-lucide="info"
+                class="w-4 h-4 text-indigo-600 mt-0.5 shrink-0">
+              </i>
+
+              <div
+                class="text-[11px] text-indigo-700 leading-5">
+
+                <p class="font-bold">
+                  Upload massal
+                </p>
+
+                <p>
+                  Kamu dapat memilih puluhan hingga ratusan foto.
+                  Foto diproses satu per satu agar lebih stabil
+                  saat dikirim ke Google Apps Script.
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- PHOTO TOOLBAR -->
+
+        <div class="flex items-center justify-between">
+
+          <div>
+
+            <h3 class="font-bold text-slate-900">
+              Foto Proyek
+            </h3>
+
+            <p
+              id="admin-photo-count"
+              class="text-xs text-slate-400 mt-0.5">
+
+              0 foto
+
+            </p>
+
+          </div>
+
+
+          <button
+            type="button"
+            onclick="app.refreshAdminPhotos()"
+            class="flex items-center gap-2 px-3 py-2 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition">
+
+            <i
+              data-lucide="refresh-cw"
+              class="w-4 h-4">
+            </i>
+
+            Refresh
+
+          </button>
+
+        </div>
+
+                <!-- SELECTED PHOTOS DOWNLOAD -->
+
+        <div
+          class="bg-white rounded-2xl border border-indigo-100 shadow-sm p-4 sm:p-5">
+
+          <div
+            class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
+            <div class="flex items-center gap-3">
+
+              <div
+                class="w-11 h-11 rounded-xl bg-indigo-50 flex items-center justify-center shrink-0">
+
+                <i
+                  data-lucide="check-square"
+                  class="w-5 h-5 text-indigo-600">
+                </i>
+
+              </div>
+
+              <div>
+
+                <h3
+                  class="font-bold text-slate-900">
+
+                  Foto Terpilih Client
+
+                </h3>
+
+                <p
+                  id="admin-selected-photo-count"
+                  class="text-xs text-slate-500 mt-0.5">
+
+                  Memuat...
+
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <button
+              type="button"
+              id="btn-download-selected"
+              onclick="app.downloadSelectedPhotos()"
+              class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-3 rounded-xl text-sm transition flex items-center justify-center gap-2">
+
+              <i
+                data-lucide="download"
+                class="w-4 h-4">
+              </i>
+
+              Download Semua Foto Terpilih
+
+            </button>
+
+          </div>
+
+        </div>
+
+        <!-- ADMIN PHOTO GRID -->
+
+        <div
+          id="admin-photo-grid"
+          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+
+        </div>
+
+      </section>
+
+    </main>
+
+
+    <!-- =======================================================
+         FOOTER
+    ======================================================== -->
+
+    <footer
+      class="border-t border-slate-200 bg-white py-6 mt-auto">
+
+      <div
+        class="max-w-7xl mx-auto px-4 text-center">
+
+        <p class="text-xs text-slate-400">
+          © 2026 ASA MOMENTS
+        </p>
+
+        <p class="text-[10px] text-slate-300 mt-1">
+          ASA PICKS • Client Photo Selection Engine
+        </p>
+
+      </div>
+
+    </footer>
+
+  </div>
+
+
+  <!-- =========================================================
+       PROJECT MODAL
+  ========================================================== -->
+
+  <div
+    id="modal-project"
+    class="fixed inset-0 z-50 bg-slate-950/50 backdrop-blur-sm hidden items-center justify-center p-4">
+
+    <div
+      class="modal-enter bg-white rounded-[2rem] max-w-lg w-full p-6 shadow-2xl border border-slate-100">
+
+      <div
+        class="flex items-center justify-between mb-6">
+
+        <div>
+
+          <p
+            class="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">
+
+            ASA PICKS
+
+          </p>
+
+          <h3
+            id="modal-project-title"
+            class="text-xl font-extrabold text-slate-900 mt-1">
+
+            Buat Proyek Baru
+
+          </h3>
+
+        </div>
+
+
+        <button
+          type="button"
+          onclick="app.closeModalProject()"
+          class="w-9 h-9 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-400">
+
+          <i data-lucide="x" class="w-5 h-5"></i>
+
+        </button>
+
+      </div>
+
+
+      <form
+        onsubmit="app.handleSaveProject(event)"
+        class="space-y-4">
+
+        <input
+          type="hidden"
+          id="project-id">
+
+
+        <!-- CLIENT -->
+
+        <div>
+
+          <label
+            for="form-client-name"
+            class="block text-xs font-bold text-slate-600 mb-1.5">
+
+            Nama Klien
+
+          </label>
+
+          <input
+            type="text"
+            id="form-client-name"
+            required
+            placeholder="Contoh: Rian & Maya"
+            class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-4 focus:ring-indigo-100 focus:border-indigo-600 outline-none">
+
+        </div>
+
+
+        <!-- EVENT -->
+
+        <div>
+
+          <label
+            for="form-event-name"
+            class="block text-xs font-bold text-slate-600 mb-1.5">
+
+            Nama Event / Acara
+
+          </label>
+
+          <input
+            type="text"
+            id="form-event-name"
+            required
+            placeholder="Contoh: Wedding Day"
+            class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-4 focus:ring-indigo-100 focus:border-indigo-600 outline-none">
+
+        </div>
+
+
+        <!-- PHONE + PIN -->
+
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+          <div>
+
+            <label
+              for="form-client-phone"
+              class="block text-xs font-bold text-slate-600 mb-1.5">
+
+              WhatsApp Klien
+
+            </label>
+
+            <input
+              type="tel"
+              id="form-client-phone"
+              placeholder="08123456789"
+              class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-4 focus:ring-indigo-100 focus:border-indigo-600 outline-none">
+
+          </div>
+
+
+          <div>
+
+            <label
+              for="form-pin"
+              class="block text-xs font-bold text-slate-600 mb-1.5">
+
+              PIN Akses
+
+            </label>
+
+            <div class="relative">
+
+              <input
+                type="text"
+                id="form-pin"
+                required
+                maxlength="6"
+                inputmode="numeric"
+                class="w-full px-4 py-3 pr-12 rounded-xl border border-slate-300 text-sm font-bold tracking-widest focus:ring-4 focus:ring-indigo-100 focus:border-indigo-600 outline-none">
+
+              <button
+                type="button"
+                onclick="app.generatePin()"
+                class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-500">
+
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- LIMIT -->
+
+        <div>
+
+          <label
+            for="form-selection-limit"
+            class="block text-xs font-bold text-slate-600 mb-1.5">
+
+            Limit Pilihan Foto
+
+          </label>
+
+          <input
+            type="number"
+            id="form-selection-limit"
+            min="1"
+            placeholder="Kosongkan jika tanpa batas"
+            class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-4 focus:ring-indigo-100 focus:border-indigo-600 outline-none">
+
+          <p class="text-[10px] text-slate-400 mt-1.5">
+            Contoh: masukkan 30 jika client hanya boleh memilih 30 foto.
+          </p>
+
+        </div>
+
+
+        <!-- ACTION -->
+
+        <div class="pt-3 flex gap-3">
+
+          <button
+            type="button"
+            onclick="app.closeModalProject()"
+            class="flex-1 px-4 py-3 rounded-xl border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50">
+
+            Batal
+
+          </button>
+
+          <button
+            type="submit"
+            id="btn-save-project-submit"
+            class="flex-1 px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold transition">
+
+            Simpan Proyek
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+       IMAGE LIGHTBOX
+  ========================================================== -->
+
+  <div
+    id="image-lightbox"
+    class="fixed inset-0 z-[70] bg-slate-950/95 hidden items-center justify-center p-4">
+
+    <button
+      type="button"
+      onclick="app.closeLightbox()"
+      class="absolute top-5 right-5 z-10 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center">
+
+      <i data-lucide="x" class="w-6 h-6"></i>
+
+    </button>
+
+
+    <div
+      class="max-w-6xl max-h-[90vh] w-full flex flex-col items-center justify-center">
+
+      <img
+        id="lightbox-image"
+        src=""
+        alt="Preview"
+        class="max-w-full max-h-[78vh] object-contain rounded-xl shadow-2xl">
+
+      <div
+        id="lightbox-caption"
+        class="mt-4 px-4 py-2 rounded-full bg-white/10 text-white text-xs font-semibold">
+
+        -
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+       SUCCESS MODAL
+  ========================================================== -->
+
+  <div
+    id="success-modal"
+    class="fixed inset-0 z-[60] bg-slate-950/40 backdrop-blur-sm hidden items-center justify-center p-4">
+
+    <div
+      class="bg-white rounded-[2rem] max-w-sm w-full p-7 text-center shadow-2xl">
+
+      <div
+        class="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
+
+        <i data-lucide="check-circle-2" class="w-9 h-9"></i>
+
+      </div>
+
+      <h3 class="text-xl font-extrabold text-slate-900 mt-5">
+        Pilihan Tersimpan
+      </h3>
+
+      <p
+        id="success-modal-text"
+        class="text-sm text-slate-500 leading-6 mt-2">
+
+        Pilihan foto Anda berhasil disimpan.
+
+      </p>
+
+      <button
+        type="button"
+        onclick="app.closeSuccessModal()"
+        class="w-full mt-6 bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl">
+
+        Selesai
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+       LOADING OVERLAY
+  ========================================================== -->
+
+  <div
+    id="loading-overlay"
+    class="fixed inset-0 z-[80] bg-white/75 backdrop-blur-sm hidden items-center justify-center">
+
+    <div
+      class="bg-white rounded-2xl border border-slate-200 shadow-xl p-6 text-center min-w-[230px]">
+
+      <div class="loading-spinner w-10 h-10 rounded-full mx-auto"></div>
+
+      <p
+        id="loading-title"
+        class="text-sm font-bold text-slate-800 mt-4">
+
+        Memuat...
+
+      </p>
+
+      <p
+        id="loading-subtitle"
+        class="text-[11px] text-slate-400 mt-1">
+
+        Menghubungkan ke server
+
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================================================
+       JAVASCRIPT
+  ========================================================== -->
+
+  <script>
+
+    /* =========================================================
+       CONFIG
+    ========================================================== */
+
+    const API_URL =
+      'https://script.google.com/macros/s/AKfycbxrkfIC8Jc3p_B64AGi8PnAr2S6nxoqgfvDOCac2JBlAoYyrNkJw0dBXMsxXvxdYGZi/exec';
+
+    const ADMIN_PASSWORD = 'minsa123';
+
+
+    /* =========================================================
+       APP STATE
+    ========================================================== */
+
+    
+    const state = {
+
+      currentView: 'portal',
+
+      isAdminLoggedIn: false,
+
+      projects: [],
+
+      currentProject: null,
+
+      photos: [],
+
+      selections: new Set(),
+      
+      adminSelectedPhotoIds: new Set(),
+
+      activeCategory: 'Semua',
+
+      isUploading: false
+
+    };
+
+
+    /* =========================================================
+       HELPERS
+    ========================================================== */
+
+    const utils = {
+
+      escapeHtml(value) {
+
+        if (value === null || value === undefined) {
+          return '';
+        }
+
+        return String(value)
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#039;');
+
+      },
+
+
+      formatDate(value) {
+
+        if (!value) {
+          return '-';
+        }
+
+        try {
+
+          return new Date(value).toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+          });
+
+        } catch {
+
+          return value;
+
+        }
+
+      },
+
+
+      generatePin() {
+
+        return Math.floor(
+          100000 + Math.random() * 900000
+        ).toString();
+
+      },
+
+
+      normalizePhotoUrl(value) {
+
+        if (!value) {
+          return '';
+        }
+
+        return String(value).trim();
+
+      }
+
+    };
+
+
+    /* =========================================================
+       API BRIDGE
+    ========================================================== */
+
+    async function apiCall(
+      action,
+      params = {},
+      method = 'GET',
+      body = null
+    ) {
+
+      app.showLoading(
+        true,
+        'Memproses...',
+        'Menghubungkan ke ASA PICKS'
+      );
+
+      try {
+
+        let url =
+          `${API_URL}?action=${encodeURIComponent(action)}`;
+
+        const fetchOptions = {
+
+          method,
+
+          redirect: 'follow',
+
+          cache: 'no-store'
+
+        };
+
+
+        if (method === 'GET') {
+
+          Object.keys(params).forEach(key => {
+
+            const value = params[key];
+
+            if (
+              value !== undefined &&
+              value !== null
+            ) {
+
+              url +=
+                `&${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+
+            }
+
+          });
+
+        }
+
+
+        if (method === 'POST') {
+
+          fetchOptions.headers = {
+
+            'Content-Type':
+              'text/plain;charset=utf-8'
+
+          };
+
+          fetchOptions.body =
+            JSON.stringify({
+
+              action,
+
+              ...(body || {})
+
+            });
+
+        }
+
+
+        console.log(
+          'ASA PICKS REQUEST:',
+          {
+            action,
+            method,
+            url
+          }
+        );
+
+
+        const response =
+          await fetch(
+            url,
+            fetchOptions
+          );
+
+
+        console.log(
+          'ASA PICKS RESPONSE:',
+          {
+            status: response.status,
+            ok: response.ok,
+            redirected: response.redirected,
+            url: response.url
+          }
+        );
+
+
+        const text =
+          await response.text();
+
+
+        console.log(
+          'ASA PICKS RAW RESPONSE:',
+          text
+        );
+
+
+        let json;
+
+
+        try {
+
+          json = JSON.parse(text);
+
+        } catch (parseError) {
+
+          console.error(
+            'JSON PARSE ERROR:',
+            parseError
+          );
+
+          throw new Error(
+            'Server mengembalikan respons yang bukan JSON.'
+          );
+
+        }
+
+
+        if (
+          !json ||
+          json.ok !== true
+        ) {
+
+          throw new Error(
+            json?.message ||
+            'Server gagal memproses permintaan.'
+          );
+
+        }
+
+
+        return json;
+
+
+      } catch (error) {
+
+        console.error(
+          'ASA PICKS API ERROR:',
+          error
+        );
+
+
+        alert(
+          'Terjadi kesalahan koneksi.\n\n' +
+          error.message +
+          '\n\nSilakan coba lagi.'
+        );
+
+
+        return {
+
+          ok: false,
+
+          error: error.message
+
+        };
+
+
+      } finally {
+
+        app.showLoading(false);
+
+      }
+
+    }
+
+
+    /* =========================================================
+       APP CONTROLLER
+    ========================================================== */
+
+    const app = {
+
+
+      /* =======================================================
+         INIT
+      ======================================================== */
+
+      init() {
+
+        lucide.createIcons();
+
+        this.renderNav();
+
+        this.navigate('portal');
+
+      },
+
+
+      /* =======================================================
+         LOADING
+      ======================================================== */
+
+      showLoading(
+        show,
+        title = 'Memuat...',
+        subtitle = 'Menghubungkan ke server'
+      ) {
+
+        const overlay =
+          document.getElementById(
+            'loading-overlay'
+          );
+
+        if (!overlay) {
+          return;
+        }
+
+
+        if (show) {
+
+          document.getElementById(
+            'loading-title'
+          ).innerText = title;
+
+
+          document.getElementById(
+            'loading-subtitle'
+          ).innerText = subtitle;
+
+
+          overlay.classList.remove(
+            'hidden'
+          );
+
+          overlay.classList.add(
+            'flex'
+          );
+
+        } else {
+
+          overlay.classList.add(
+            'hidden'
+          );
+
+          overlay.classList.remove(
+            'flex'
+          );
+
+        }
+
+      },
+
+
+      /* =======================================================
+         NAVIGATION
+      ======================================================== */
+
+      navigate(
+        viewName,
+        data = null
+      ) {
+
+        console.log(
+          'NAVIGATE:',
+          viewName
+        );
+
+
+        state.currentView =
+          viewName;
+
+
+        const views = [
+
+          'portal',
+
+          'client-gallery',
+
+          'admin-login',
+
+          'admin-dashboard',
+
+          'admin-photos'
+
+        ];
+
+
+        views.forEach(view => {
+
+          const element =
+            document.getElementById(
+              `view-${view}`
+            );
+
+          if (element) {
+
+            element.classList.add(
+              'hidden'
+            );
+
+          }
+
+        });
+
+
+        const active =
+          document.getElementById(
+            `view-${viewName}`
+          );
+
+
+        if (active) {
+
+          active.classList.remove(
+            'hidden'
+          );
+
+        }
+
+
+        this.renderNav();
+
+
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+
+
+        if (
+          viewName ===
+          'admin-dashboard'
+        ) {
+
+          this.loadAdminDashboard();
+
+        }
+
+
+        if (
+          viewName ===
+          'admin-photos' &&
+          data
+        ) {
+
+          this.loadAdminPhotosView(
+            data
+          );
+
+        }
+
+
+        setTimeout(() => {
+
+          lucide.createIcons();
+
+        }, 0);
+
+      },
+
+
+      goHome() {
+
+        if (
+          state.isAdminLoggedIn
+        ) {
+
+          this.navigate(
+            'admin-dashboard'
+          );
+
+          return;
+
+        }
+
+
+        if (
+          state.currentProject
+        ) {
+
+          this.navigate(
+            'client-gallery'
+          );
+
+          return;
+
+        }
+
+
+        this.navigate('portal');
+
+      },
+
+
+      renderNav() {
+
+        const container =
+          document.getElementById(
+            'nav-actions'
+          );
+
+
+        if (!container) {
+          return;
+        }
+
+
+        container.innerHTML = '';
+
+
+        if (
+          state.isAdminLoggedIn
+        ) {
+
+          container.innerHTML = `
+
+            <span
+              class="hidden sm:inline-flex items-center gap-1.5 text-[10px] font-bold px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg">
+
+              <span
+                class="w-1.5 h-1.5 rounded-full bg-emerald-500">
+              </span>
+
+              ADMIN MODE
+
+            </span>
+
+            <button
+              type="button"
+              onclick="app.logoutAdmin()"
+              class="text-xs font-bold text-red-500 hover:text-red-600">
+
+              Keluar
+
+            </button>
+
+          `;
+
+        }
+
+        else if (
+          state.currentProject &&
+          state.currentView ===
+          'client-gallery'
+        ) {
+
+          container.innerHTML = `
+
+            <button
+              type="button"
+              onclick="app.logoutClient()"
+              class="text-xs font-bold text-slate-500 hover:text-slate-800">
+
+              Keluar Galeri
+
+            </button>
+
+          `;
+
+        }
+
+        else {
+
+          container.innerHTML = `
+
+            <button
+              type="button"
+              onclick="app.navigate('admin-login')"
+              class="text-xs font-bold text-slate-600 hover:text-indigo-600">
+
+              Admin
+
+            </button>
+
+          `;
+
+        }
+
+
+        lucide.createIcons();
+
+      },
+
+
+      /* =======================================================
+         CLIENT LOGIN
+      ======================================================== */
+
+      async handleClientLogin(event) {
+
+        event.preventDefault();
+
+
+        const input =
+          document.getElementById(
+            'client-pin'
+          );
+
+
+        const pin =
+          input.value.trim();
+
+
+        if (!pin) {
+
+          alert(
+            'Silakan masukkan PIN galeri.'
+          );
+
+          input.focus();
+
+          return;
+
+        }
+
+
+        if (
+          !/^\d{6}$/.test(pin)
+        ) {
+
+          alert(
+            'PIN galeri harus terdiri dari 6 angka.'
+          );
+
+          input.focus();
+
+          return;
+
+        }
+
+
+        const button =
+          document.getElementById(
+            'btn-portal-submit'
+          );
+
+
+        button.disabled = true;
+
+
+        try {
+
+          const result =
+            await apiCall(
+              'getProjects'
+            );
+
+
+          if (!result.ok) {
+            return;
+          }
+
+
+          const projects =
+            Array.isArray(result.data)
+              ? result.data
+              : [];
+
+
+          const project =
+            projects.find(
+              p =>
+                String(p.pin).trim() ===
+                pin
+            );
+
+
+          if (!project) {
+
+            alert(
+              'PIN tidak valid.\n\n' +
+              'Silakan periksa kembali PIN dari tim ASA MOMENTS.'
+            );
+
+            input.select();
+
+            return;
+
+          }
+
+
+          state.currentProject =
+            project;
+
+
+          await this.loadClientGallery(
+            project.id
+          );
+
+
+        } finally {
+
+          button.disabled = false;
+
+        }
+
+      },
+
+
+      /* =======================================================
+         CLIENT GALLERY
+      ======================================================== */
+
+      async loadClientGallery(
+        projectId
+      ) {
+
+        const [
+          projectResult,
+          drivePhotosResult,
+          sheetPhotosResult,
+          selectionsResult
+        ] = await Promise.all([
+
+          apiCall(
+            'getProject',
+            {
+              id: projectId
+            }
+          ),
+
+          apiCall(
+            'getPhotosFromDrive',
+            {
+              projectId
+            }
+          ),
+
+          apiCall(
+            'getPhotos',
+            {
+              projectId
+            }
+          ),
+
+          apiCall(
+            'getSelections',
+            {
+              projectId
+            }
+          )
+
+        ]);
+
+
+        if (
+          projectResult.ok
+        ) {
+
+          state.currentProject =
+            projectResult.data;
+
+        }
+
+
+        const drivePhotos =
+          drivePhotosResult.ok &&
+          Array.isArray(drivePhotosResult.data)
+            ? drivePhotosResult.data
+            : [];
+
+        const sheetPhotos =
+          sheetPhotosResult.ok &&
+          Array.isArray(sheetPhotosResult.data)
+            ? sheetPhotosResult.data
+            : [];
+
+        state.photos =
+          drivePhotos.length > 0
+            ? drivePhotos
+            : sheetPhotos;
+
+        console.log('CLIENT DRIVE PHOTOS:', drivePhotos);
+        console.log('CLIENT SHEET PHOTOS:', sheetPhotos);
+        console.log('CLIENT FINAL PHOTOS:', state.photos);
+
+
+        state.selections.clear();
+
+
+        if (
+          selectionsResult.ok &&
+          Array.isArray(
+            selectionsResult.data
+          )
+        ) {
+
+          selectionsResult.data.forEach(
+            selection => {
+
+              state.selections.add(
+                String(
+                  selection.photoId
+                )
+              );
+
+            }
+          );
+
+        }
+
+
+        state.activeCategory =
+          'Semua';
+
+
+        this.renderClientHeader();
+
+        this.renderCategoryFilters();
+
+        this.renderClientPhotoGrid();
+
+        this.updateSelectionCounter();
+
+        this.navigate(
+          'client-gallery'
+        );
+
+      },
+
+
+      renderClientHeader() {
+
+        const project =
+          state.currentProject;
+
+
+        if (!project) {
+          return;
+        }
+
+
+        document.getElementById(
+          'client-gallery-title'
+        ).innerText =
+          project.eventName ||
+          'Galeri Foto';
+
+
+        document.getElementById(
+          'client-gallery-subtitle'
+        ).innerText =
+          `Klien: ${
+            project.clientName || '-'
+          }`;
+
+
+        document.getElementById(
+          'client-gallery-phone'
+        ).innerText =
+          project.clientPhone
+            ? `WA: ${project.clientPhone}`
+            : '';
+
+
+        document.getElementById(
+          'client-gallery-date'
+        ).innerText =
+          utils.formatDate(
+            project.createdAt
+          );
+
+      },
+
+
+      updateSelectionCounter() {
+
+        const selected =
+          state.selections.size;
+
+
+        const limit =
+          state.currentProject
+            ? state.currentProject.selectionLimit
+            : null;
+
+
+        document.getElementById(
+          'count-selected'
+        ).innerText =
+          selected;
+
+
+        const limitElement =
+          document.getElementById(
+            'count-limit'
+          );
+
+
+        if (
+          limit === null ||
+          limit === undefined ||
+          limit === '' ||
+          isNaN(limit)
+        ) {
+
+          limitElement.innerText =
+            'Tanpa Batas';
+
+        } else {
+
+          limitElement.innerText =
+            limit;
+
+        }
+
+
+        const submitButton =
+          document.getElementById(
+            'btn-submit-selection'
+          );
+
+
+        if (
+          selected === 0
+        ) {
+
+          submitButton.classList.add(
+            'opacity-60'
+          );
+
+        } else {
+
+          submitButton.classList.remove(
+            'opacity-60'
+          );
+
+        }
+
+      },
+
+
+      togglePhotoSelection(
+        photoId
+      ) {
+
+        photoId =
+          String(photoId);
+
+
+        const limit =
+          state.currentProject
+            ? state.currentProject.selectionLimit
+            : null;
+
+
+        const selected =
+          state.selections.has(
+            photoId
+          );
+
+
+        if (!selected) {
+
+          if (
+            limit !== null &&
+            limit !== undefined &&
+            limit !== '' &&
+            !isNaN(limit) &&
+            state.selections.size >=
+              Number(limit)
+          ) {
+
+            alert(
+              `Maksimal ${limit} foto untuk proyek ini.`
+            );
+
+            return;
+
+          }
+
+
+          state.selections.add(
+            photoId
+          );
+
+        } else {
+
+          state.selections.delete(
+            photoId
+          );
+
+        }
+
+
+        this.updateSelectionCounter();
+
+        this.renderClientPhotoGrid();
+
+      },
+
+
+      renderCategoryFilters() {
+
+        const container =
+          document.getElementById(
+            'category-filters'
+          );
+
+
+        const categories = [
+
+          'Semua',
+
+          ...new Set(
+            state.photos.map(
+              photo =>
+                photo.category ||
+                'Umum'
+            )
+          )
+
+        ];
+
+
+        container.innerHTML =
+          categories.map(
+            category => {
+
+              const active =
+                state.activeCategory ===
+                category;
+
+
+              return `
+
+                <button
+                  type="button"
+                  onclick="app.setCategory(${JSON.stringify(category)})"
+                  class="px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition ${
+                    active
+                      ? 'bg-indigo-600 text-white shadow-sm'
+                      : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                  }">
+
+                  ${utils.escapeHtml(
+                    category
+                  )}
+
+                </button>
+
+              `;
+
+            }
+          ).join('');
+
+      },
+
+
+      setCategory(
+        category
+      ) {
+
+        state.activeCategory =
+          category;
+
+        this.renderCategoryFilters();
+
+        this.renderClientPhotoGrid();
+
+      },
+
+
+      renderClientPhotoGrid() {
+
+        const grid =
+          document.getElementById(
+            'client-photo-grid'
+          );
+
+
+        if (
+          !state.photos ||
+          state.photos.length === 0
+        ) {
+
+          grid.innerHTML = `
+
+            <div
+              class="col-span-full bg-white rounded-2xl border border-slate-200 py-16 px-6 text-center">
+
+              <div
+                class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto">
+
+                <i
+                  data-lucide="image-off"
+                  class="w-7 h-7 text-slate-300">
+                </i>
+
+              </div>
+
+              <h3
+                class="text-sm font-bold text-slate-700 mt-4">
+
+                Belum Ada Foto
+
+              </h3>
+
+              <p
+                class="text-xs text-slate-400 mt-1">
+
+                Tim fotografer belum menambahkan foto ke galeri ini.
+
+              </p>
+
+            </div>
+
+          `;
+
+
+          lucide.createIcons();
+
+          return;
+
+        }
+
+
+        const filtered =
+          state.activeCategory ===
+          'Semua'
+
+            ? state.photos
+
+            : state.photos.filter(
+                photo =>
+                  (
+                    photo.category ||
+                    'Umum'
+                  ) ===
+                  state.activeCategory
+              );
+
+
+        if (
+          filtered.length === 0
+        ) {
+
+          grid.innerHTML = `
+
+            <div
+              class="col-span-full text-center py-12">
+
+              <p
+                class="text-sm font-bold text-slate-600">
+
+                Tidak ada foto di kategori ini.
+
+              </p>
+
+            </div>
+
+          `;
+
+          return;
+
+        }
+
+
+        grid.innerHTML =
+          filtered.map(
+            photo => {
+
+              const id =
+                String(photo.id);
+
+
+              const selected =
+                state.selections.has(
+                  id
+                );
+
+
+              const imageUrl =
+                utils.escapeHtml(
+                  utils.normalizePhotoUrl(
+                    photo.url
+                  )
+                );
+
+
+              const category =
+                utils.escapeHtml(
+                  photo.category ||
+                  'Umum'
+                );
+
+
+              return `
+
+                <div
+  class="photo-card group relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-100 border-2 cursor-pointer ${
+    selected
+      ? 'selected border-indigo-600'
+      : 'border-transparent'
+  }"
+  data-photo-id="${utils.escapeHtml(id)}"
+  onclick="app.togglePhotoSelection(this.dataset.photoId)">
+
+                  <img
+                    src="${imageUrl}"
+                    alt="Foto ${category}"
+                    class="w-full h-full object-cover"
+                    loading="lazy"
+                    onerror="this.src='https://placehold.co/800x600?text=Foto+Tidak+Tersedia'">
+
+                  <div
+                    class="absolute inset-0 pointer-events-none ${
+                      selected
+                        ? 'bg-indigo-900/10'
+                        : 'bg-black/0 group-hover:bg-black/10'
+                    } transition">
+                  </div>
+
+
+                  <div
+                    class="absolute top-2.5 right-2.5 w-8 h-8 rounded-full flex items-center justify-center transition ${
+                      selected
+                        ? 'bg-indigo-600 text-white shadow-lg'
+                        : 'bg-black/30 backdrop-blur text-white border border-white/50'
+                    }">
+
+                    <i
+                      data-lucide="check"
+                      class="w-4 h-4 ${
+                        selected
+                          ? 'opacity-100'
+                          : 'opacity-0'
+                      }">
+                    </i>
+
+                  </div>
+
+
+                  <button
+                    type="button"
+                    onclick="
+                      event.stopPropagation();
+                      app.openLightbox(
+                        ${JSON.stringify(imageUrl)},
+                        ${JSON.stringify(category)}
+                      )
+                    "
+                    class="absolute top-2.5 left-2.5 w-8 h-8 rounded-full bg-black/30 backdrop-blur text-white border border-white/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+
+                    <i
+                      data-lucide="maximize-2"
+                      class="w-4 h-4">
+                    </i>
+
+                  </button>
+
+
+                  <div
+                    class="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-lg bg-black/40 backdrop-blur text-[9px] text-white font-bold">
+
+                    ${category}
+
+                  </div>
+
+
+                  ${
+                    selected
+                      ? `
+                        <div
+                          class="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-lg bg-indigo-600 text-white text-[9px] font-bold">
+
+                          DIPILIH
+
+                        </div>
+                      `
+                      : ''
+                  }
+
+                </div>
+
+              `;
+
+            }
+          ).join('');
+
+
+        lucide.createIcons();
+
+      },
+
+
+      /* =======================================================
+         CLIENT SELECTION
+      ======================================================== */
+
+      async submitSelections() {
+
+        const total =
+          state.selections.size;
+
+
+        if (
+          total === 0
+        ) {
+
+          alert(
+            'Silakan pilih minimal 1 foto.'
+          );
+
+          return;
+
+        }
+
+
+        if (
+          !confirm(
+            `Anda memilih ${total} foto.\n\nKirim pilihan sekarang?`
+          )
+        ) {
+
+          return;
+
+        }
+
+
+        const result =
+          await apiCall(
+            'saveSelections',
+            {},
+            'POST',
+            {
+
+              projectId:
+                state.currentProject.id,
+
+              photoIds:
+                Array.from(
+                  state.selections
+                )
+
+            }
+          );
+
+
+        if (
+          result.ok
+        ) {
+
+          document.getElementById(
+            'success-modal-text'
+          ).innerText =
+            `Sebanyak ${total} foto berhasil disimpan sebagai pilihan Anda.`;
+
+
+          const modal =
+            document.getElementById(
+              'success-modal'
+            );
+
+
+          modal.classList.remove(
+            'hidden'
+          );
+
+          modal.classList.add(
+            'flex'
+          );
+
+
+          await this.loadClientGallery(
+            state.currentProject.id
+          );
+
+        }
+
+      },
+
+
+      closeSuccessModal() {
+
+        const modal =
+          document.getElementById(
+            'success-modal'
+          );
+
+
+        modal.classList.add(
+          'hidden'
+        );
+
+        modal.classList.remove(
+          'flex'
+        );
+
+      },
+
+
+      logoutClient() {
+
+        state.currentProject =
+          null;
+
+        state.photos =
+          [];
+
+        state.selections.clear();
+
+        state.activeCategory =
+          'Semua';
+
+
+        const pinInput =
+          document.getElementById(
+            'client-pin'
+          );
+
+
+        if (pinInput) {
+          pinInput.value = '';
+        }
+
+
+        this.navigate(
+          'portal'
+        );
+
+      },
+
+
+      /* =======================================================
+         ADMIN LOGIN
+      ======================================================== */
+
+      handleAdminLogin(
+        event
+      ) {
+
+        if (event) {
+          event.preventDefault();
+        }
+
+
+        const passwordInput =
+          document.getElementById(
+            'admin-password'
+          );
+
+
+        if (!passwordInput) {
+
+          console.error(
+            'Input password admin tidak ditemukan.'
+          );
+
+          return;
+
+        }
+
+
+        const password =
+          passwordInput.value.trim();
+
+
+        if (!password) {
+
+          alert(
+            'Silakan masukkan kata sandi admin.'
+          );
+
+          passwordInput.focus();
+
+          return;
+
+        }
+
+
+        if (
+          password ===
+          ADMIN_PASSWORD
+        ) {
+
+          state.isAdminLoggedIn =
+            true;
+
+
+          passwordInput.value =
+            '';
+
+
+          console.log(
+            'ADMIN LOGIN BERHASIL'
+          );
+
+
+          this.navigate(
+            'admin-dashboard'
+          );
+
+        } else {
+
+          alert(
+            'Kata sandi admin salah.'
+          );
+
+
+          passwordInput.value =
+            '';
+
+
+          passwordInput.focus();
+
+        }
+
+      },
+
+
+      logoutAdmin() {
+
+        state.isAdminLoggedIn =
+          false;
+
+        state.currentProject =
+          null;
+
+        state.photos =
+          [];
+
+        this.navigate(
+          'portal'
+        );
+
+      },
+
+
+      /* =======================================================
+         ADMIN DASHBOARD
+      ======================================================== */
+
+      async loadAdminDashboard() {
+
+        console.log(
+          'LOAD ADMIN DASHBOARD'
+        );
+
+
+        const result =
+          await apiCall(
+            'getProjects'
+          );
+
+
+        if (!result.ok) {
+
+          console.error(
+            'Gagal mengambil proyek:',
+            result.error ||
+            result.message
+          );
+
+          return;
+
+        }
+
+
+        state.projects =
+          Array.isArray(
+            result.data
+          )
+            ? result.data
+            : [];
+
+
+        console.log(
+          'ASA PICKS PROJECTS:',
+          state.projects
+        );
+
+
+        this.renderAdminStats();
+
+        this.renderProjectsTable();
+
+        lucide.createIcons();
+
+      },
+
+
+      renderAdminStats() {
+
+        const total =
+          state.projects.length;
+
+
+        const completed =
+          state.projects.filter(
+            project =>
+              String(
+                project.status ||
+                ''
+              )
+                .toLowerCase()
+                .includes('selesai')
+          ).length;
+
+
+        const waiting =
+          total - completed;
+
+
+        const totalElement =
+          document.getElementById(
+            'stat-total-projects'
+          );
+
+
+        const waitingElement =
+          document.getElementById(
+            'stat-waiting'
+          );
+
+
+        const completedElement =
+          document.getElementById(
+            'stat-completed'
+          );
+
+
+        if (totalElement) {
+          totalElement.innerText =
+            total;
+        }
+
+
+        if (waitingElement) {
+          waitingElement.innerText =
+            waiting;
+        }
+
+
+        if (completedElement) {
+          completedElement.innerText =
+            completed;
+        }
+
+      },
+
+
+      renderProjectsTable() {
+
+        const tbody =
+          document.getElementById(
+            'projects-table-body'
+          );
+
+
+        if (!tbody) {
+
+          console.error(
+            'projects-table-body tidak ditemukan.'
+          );
+
+          return;
+
+        }
+
+
+        if (
+          state.projects.length ===
+          0
+        ) {
+
+          tbody.innerHTML = `
+
+            <tr>
+
+              <td
+                colspan="6"
+                class="py-16 px-6 text-center">
+
+                <div
+                  class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto">
+
+                  <i
+                    data-lucide="folder-open"
+                    class="w-7 h-7 text-slate-300">
+                  </i>
+
+                </div>
+
+                <p
+                  class="text-sm font-bold text-slate-700 mt-4">
+
+                  Belum Ada Proyek
+
+                </p>
+
+                <p
+                  class="text-xs text-slate-400 mt-1">
+
+                  Klik "Buat Proyek Baru"
+                  untuk memulai.
+
+                </p>
+
+              </td>
+
+            </tr>
+
+          `;
+
+
+          lucide.createIcons();
+
+          return;
+
+        }
+
+
+        tbody.innerHTML =
+          state.projects.map(
+            project => {
+
+              const status =
+                project.status ||
+                'Menunggu Pilihan';
+
+
+              const completed =
+                status
+                  .toLowerCase()
+                  .includes('selesai');
+
+
+              const statusClass =
+                completed
+
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+
+                  : 'bg-amber-50 text-amber-700 border-amber-200';
+
+
+              const limit =
+                (
+                  project.selectionLimit ===
+                    null ||
+                  project.selectionLimit ===
+                    undefined ||
+                  project.selectionLimit ===
+                    ''
+                )
+
+                  ? 'Tanpa Batas'
+
+                  : `${project.selectionLimit} Foto`;
+
+
+              const safeId =
+                utils.escapeHtml(
+                  String(
+                    project.id
+                  )
+                );
+
+
+              return `
+
+                <tr
+                  class="hover:bg-slate-50 transition">
+
+
+                  <!-- EVENT -->
+
+                  <td
+                    class="py-4 px-4">
+
+                    <div
+                      class="font-bold text-slate-900">
+
+                      ${utils.escapeHtml(
+                        project.eventName
+                      )}
+
+                    </div>
+
+                    <div
+                      class="text-[10px] text-slate-400 mt-1">
+
+                      ID:
+                      ${utils.escapeHtml(
+                        project.id
+                      )}
+
+                    </div>
+
+                  </td>
+
+
+                  <!-- CLIENT -->
+
+                  <td
+                    class="py-4 px-4">
+
+                    <div
+                      class="font-semibold text-slate-800">
+
+                      ${utils.escapeHtml(
+                        project.clientName
+                      )}
+
+                    </div>
+
+                    <div
+                      class="text-xs text-slate-400 mt-1">
+
+                      ${utils.escapeHtml(
+                        project.clientPhone ||
+                        '-'
+                      )}
+
+                    </div>
+
+                  </td>
+
+
+                  <!-- PIN -->
+
+                  <td
+                    class="py-4 px-4">
+
+                    <span
+                      class="font-mono font-extrabold text-slate-700 bg-slate-100 px-2.5 py-1.5 rounded-lg">
+
+                      ${utils.escapeHtml(
+                        project.pin
+                      )}
+
+                    </span>
+
+                  </td>
+
+
+                  <!-- LIMIT -->
+
+                  <td
+                    class="py-4 px-4 text-xs font-semibold text-slate-600">
+
+                    ${limit}
+
+                  </td>
+
+
+                  <!-- STATUS -->
+
+                  <td
+                    class="py-4 px-4">
+
+                    <span
+                      class="inline-flex px-2.5 py-1 rounded-full text-[10px] font-bold border ${statusClass}">
+
+                      ${utils.escapeHtml(
+                        status
+                      )}
+
+                    </span>
+
+                  </td>
+
+
+                  <!-- ACTION -->
+
+                  <td
+                    class="py-4 px-4 text-right">
+
+                    <div
+                      class="flex justify-end items-center gap-1">
+
+
+                      <!-- WHATSAPP -->
+
+                      <button
+                        type="button"
+                        onclick='app.openWhatsApp(${JSON.stringify(String(project.id))})'
+                        title="Chat WhatsApp"
+                        class="p-2 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition">
+
+                        <i
+                          data-lucide="message-circle"
+                          class="w-4 h-4">
+                        </i>
+
+                      </button>
+
+
+                      <!-- MANAGE PHOTOS -->
+
+                      <button
+                        type="button"
+                        onclick='app.openManagePhotos(${JSON.stringify(String(project.id))})'
+                        title="Kelola Foto"
+                        class="p-2 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition">
+
+                        <i
+                          data-lucide="images"
+                          class="w-4 h-4">
+                        </i>
+
+                      </button>
+
+                      <!-- DOWNLOAD SELECTED PHOTOS -->
+
+${
+  completed
+    ? `
+      <button
+        type="button"
+        onclick='app.downloadSelectedPhotos(${JSON.stringify(String(project.id))})'
+        title="Download Foto Terpilih"
+        class="p-2 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition">
+
+        <i
+          data-lucide="download"
+          class="w-4 h-4">
+        </i>
+
+      </button>
+    `
+    : ''
+}
+
+
+                      <!-- EDIT -->
+
+                      <button
+                        type="button"
+                        onclick='app.editProject(${JSON.stringify(String(project.id))})'
+                        title="Edit"
+                        class="p-2 rounded-lg text-slate-500 hover:bg-slate-100 transition">
+
+                        <i
+                          data-lucide="pencil"
+                          class="w-4 h-4">
+                        </i>
+
+                      </button>
+
+
+                      <!-- DELETE -->
+
+                      <button
+                        type="button"
+                        onclick='app.deleteProject(${JSON.stringify(String(project.id))})'
+                        title="Hapus"
+                        class="p-2 rounded-lg text-red-500 hover:bg-red-50 transition">
+
+                        <i
+                          data-lucide="trash-2"
+                          class="w-4 h-4">
+                        </i>
+
+                      </button>
+
+                    </div>
+
+                  </td>
+
+                </tr>
+
+              `;
+
+            }
+          ).join('');
+
+
+        lucide.createIcons();
+
+      },
+
+
+      /* =======================================================
+         WHATSAPP
+      ======================================================== */
+
+      openWhatsApp(
+        id
+      ) {
+
+        const project =
+          state.projects.find(
+            item =>
+              String(item.id) ===
+              String(id)
+          );
+
+
+        if (!project) {
+
+          alert(
+            'Data proyek tidak ditemukan.'
+          );
+
+          return;
+
+        }
+
+
+        if (!project.clientPhone) {
+
+          alert(
+            'Nomor WhatsApp client belum diisi.'
+          );
+
+          return;
+
+        }
+
+
+        let phone =
+          String(
+            project.clientPhone
+          )
+            .replace(/\D/g, '');
+
+
+        if (
+          phone.startsWith('0')
+        ) {
+
+          phone =
+            '62' +
+            phone.substring(1);
+
+        }
+
+
+        const clientName =
+          project.clientName ||
+          'Kak';
+
+
+        const eventName =
+          project.eventName ||
+          'acara Anda';
+
+
+        const pin =
+          project.pin ||
+          '-';
+
+
+        const galleryUrl =
+          window.location.href;
+
+
+        const message =
+`Halo ${clientName} 👋
+
+Terima kasih sudah mempercayakan momen spesialnya kepada ASA MOMENTS 🤍
+
+Foto-foto untuk ${eventName} sudah siap dan bisa mulai dipilih melalui galeri ASA PICKS 📸
+
+🔗 ${galleryUrl}
+
+🔐 PIN Galeri: ${pin}
+
+Silakan pilih foto favorit sesuai dengan jumlah foto yang sudah ditentukan ya Kak 😊
+
+Terima kasih dan selamat memilih foto!
+
+— ASA MOMENTS 📸`;
+
+
+        const whatsappUrl =
+          `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+
+        window.open(
+          whatsappUrl,
+          '_blank'
+        );
+
+      },
+
+
+      /* =======================================================
+         ADMIN PHOTO MANAGEMENT
+      ======================================================== */
+
+      async openManagePhotos(
+        projectId
+      ) {
+
+        console.log(
+          'OPEN MANAGE PHOTOS:',
+          projectId
+        );
+
+
+        const result =
+          await apiCall(
+            'getProject',
+            {
+              id: projectId
+            }
+          );
+
+
+        if (!result.ok) {
+          return;
+        }
+
+
+        this.navigate(
+          'admin-photos',
+          result.data
+        );
+
+      },
+
+      async downloadSelectedPhotos() {
+
+  const project =
+    state.currentProject;
+
+
+  if (!project || !project.id) {
+
+    alert(
+      'Proyek belum dipilih.'
+    );
+
+    return;
+
+  }
+
+
+  const selectedCount =
+    state.adminSelectedPhotoIds
+      ? state.adminSelectedPhotoIds.size
+      : 0;
+
+
+  if (selectedCount === 0) {
+
+    alert(
+      'Belum ada foto yang dipilih client.'
+    );
+
+    return;
+
+  }
+
+
+  console.log(
+    'DOWNLOAD SELECTED PHOTOS:',
+    project.id
+  );
+
+
+  const button =
+    document.getElementById(
+      'btn-download-selected'
+    );
+
+
+  if (button) {
+
+    button.disabled = true;
+
+    button.classList.add(
+      'opacity-60',
+      'cursor-not-allowed'
+    );
+
+    button.innerHTML = `
+
+      <i
+        data-lucide="loader-2"
+        class="w-4 h-4 animate-spin">
+      </i>
+
+      Membuat ZIP...
+
+    `;
+
+    lucide.createIcons();
+
+  }
+
+
+  try {
+
+    const result =
+      await apiCall(
+        'downloadSelectedPhotos',
+        {
+          projectId:
+            project.id
+        }
+      );
+
+
+    console.log(
+      'DOWNLOAD RESULT:',
+      result
+    );
+
+
+    if (!result.ok) {
+
+      alert(
+        result.message ||
+        'Gagal membuat ZIP foto terpilih.'
+      );
+
+      return;
+
+    }
+
+
+    if (
+      result.data &&
+      result.data.url
+    ) {
+
+      window.open(
+        result.data.url,
+        '_blank'
+      );
+
+    } else {
+
+      alert(
+        'ZIP berhasil dibuat, tetapi link download tidak ditemukan.'
+      );
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      'DOWNLOAD ZIP ERROR:',
+      error
+    );
+
+    alert(
+      'Terjadi kesalahan saat membuat ZIP.'
+    );
+
+  } finally {
+
+    if (button) {
+
+      button.disabled = false;
+
+      button.classList.remove(
+        'opacity-60',
+        'cursor-not-allowed'
+      );
+
+      button.innerHTML = `
+
+        <i
+          data-lucide="download"
+          class="w-4 h-4">
+        </i>
+
+        Download Semua Foto Terpilih
+
+      `;
+
+      lucide.createIcons();
+
+    }
+
+  }
+
+},
+
+      async loadAdminPhotosView(project) {
+
+  if (!project) {
+
+    console.error(
+      'Project untuk foto tidak ditemukan.'
+    );
+
+    alert(
+      'Data proyek tidak ditemukan.'
+    );
+
+    return;
+
+  }
+
+
+  state.currentProject =
+    project;
+
+
+  document.getElementById(
+    'manage-photos-title'
+  ).innerText =
+    project.eventName ||
+    'Foto Proyek';
+
+
+  document.getElementById(
+    'manage-photos-subtitle'
+  ).innerText =
+    `Klien: ${
+      project.clientName ||
+      '-'
+    }`;
+
+
+  console.log(
+    'LOAD ADMIN PHOTOS:',
+    project.id
+  );
+
+
+  /*
+    Ambil:
+    1. Semua foto proyek
+    2. Foto yang dipilih client
+  */
+
+  const [
+    photosResult,
+    selectionsResult
+  ] = await Promise.all([
+
+    apiCall(
+      'getPhotosFromDrive',
+      {
+        projectId:
+          project.id
+      }
+    ),
+
+    apiCall(
+      'getSelections',
+      {
+        projectId:
+          project.id
+      }
+    )
+
+  ]);
+
+
+  /*
+    FOTO PROYEK
+  */
+
+  if (
+    photosResult.ok
+  ) {
+
+    state.photos =
+      Array.isArray(
+        photosResult.data
+      )
+        ? photosResult.data
+        : [];
+
+  } else {
+
+    state.photos = [];
+
+  }
+
+
+  /*
+    PILIHAN CLIENT
+  */
+
+  const selectedPhotoIds =
+    new Set();
+
+
+  if (
+    selectionsResult.ok &&
+    Array.isArray(
+      selectionsResult.data
+    )
+  ) {
+
+    selectionsResult.data.forEach(
+      selection => {
+
+        if (
+          selection &&
+          selection.photoId
+        ) {
+
+          selectedPhotoIds.add(
+            String(
+              selection.photoId
+            )
+          );
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /*
+    SIMPAN PILIHAN CLIENT
+    KE STATE TERPISAH
+  */
+
+  state.adminSelectedPhotoIds =
+    selectedPhotoIds;
+
+  const selectedCount =
+  selectedPhotoIds.size;
+
+  const selectedCountElement =
+  document.getElementById(
+    'admin-selected-photo-count'
+  );
+
+if (selectedCountElement) {
+
+  selectedCountElement.innerText =
+    selectedCount === 0
+      ? 'Belum ada foto yang dipilih client'
+      : `${selectedCount} foto dipilih client`;
+
+}
+
+
+  console.log(
+    'ASA PICKS ADMIN PHOTOS:',
+    state.photos
+  );
+
+
+  console.log(
+    'ASA PICKS CLIENT SELECTIONS:',
+    Array.from(
+      selectedPhotoIds
+    )
+  );
+
+
+  this.renderAdminPhotoGrid();
+
+  lucide.createIcons();
+
+},
+      async refreshAdminPhotos() {
+
+        if (
+          !state.currentProject
+        ) {
+
+          alert(
+            'Proyek belum dipilih.'
+          );
+
+          return;
+
+        }
+
+
+        await this.loadAdminPhotosView(
+          state.currentProject
+        );
+
+      },
+
+
+      renderAdminPhotoGrid() {
+
+        const grid =
+          document.getElementById(
+            'admin-photo-grid'
+          );
+
+
+        const count =
+          document.getElementById(
+            'admin-photo-count'
+          );
+
+
+        if (!grid) {
+
+          console.error(
+            'admin-photo-grid tidak ditemukan.'
+          );
+
+          return;
+
+        }
+
+
+        if (count) {
+
+          count.innerText =
+            `${state.photos.length} foto`;
+
+        }
+
+
+        if (
+          !state.photos ||
+          state.photos.length === 0
+        ) {
+
+          grid.innerHTML = `
+
+            <div
+              class="col-span-full bg-white rounded-2xl border border-slate-200 py-14 px-6 text-center">
+
+              <div
+                class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto">
+
+                <i
+                  data-lucide="images"
+                  class="w-7 h-7 text-slate-300">
+                </i>
+
+              </div>
+
+              <p
+                class="text-sm font-bold text-slate-700 mt-4">
+
+                Belum Ada Foto
+
+              </p>
+
+              <p
+                class="text-xs text-slate-400 mt-1">
+
+                Upload foto menggunakan tombol
+                "Pilih Foto" di atas.
+
+              </p>
+
+            </div>
+
+          `;
+
+
+          lucide.createIcons();
+
+          return;
+
+        }
+
+
+        grid.innerHTML =
+          state.photos.map(
+            photo => {
+
+              const rawUrl =
+                utils.normalizePhotoUrl(
+                  photo.url
+                );
+
+
+              const url =
+                utils.escapeHtml(
+                  rawUrl
+                );
+
+
+              const category =
+                utils.escapeHtml(
+                  photo.category ||
+                  'Umum'
+                );
+
+
+              const photoId =
+                utils.escapeHtml(
+                  String(
+                    photo.id ||
+                    ''
+                  )
+                );
+
+
+              return `
+
+                <div
+                  class="group relative aspect-square rounded-2xl overflow-hidden bg-slate-100 border border-slate-200">
+
+                  <img
+                    src="${url}"
+                    alt="Foto ${category}"
+                    loading="lazy"
+                    class="w-full h-full object-cover transition duration-300 group-hover:scale-105"
+                    onerror="this.src='https://placehold.co/600x600?text=Foto+Tidak+Tersedia'">
+
+
+                  <div
+                    class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition">
+                  </div>
+
+
+                  <div
+                    class="absolute bottom-2 left-2 right-2 flex items-center justify-between gap-2">
+
+                    <span
+                      class="max-w-[80%] truncate px-2 py-1 rounded-lg bg-black/50 backdrop-blur text-[9px] text-white font-bold">
+
+                      ${category}
+
+                    </span>
+
+
+                    <button
+                      type="button"
+                      onclick="
+                        app.openLightbox(
+                          ${JSON.stringify(rawUrl)},
+                          ${JSON.stringify(category)}
+                        )
+                      "
+                      class="w-7 h-7 shrink-0 rounded-lg bg-white/20 backdrop-blur text-white flex items-center justify-center hover:bg-white/30">
+
+                      <i
+                        data-lucide="maximize-2"
+                        class="w-3.5 h-3.5">
+                      </i>
+
+                    </button>
+
+                  </div>
+
+                </div>
+
+              `;
+
+            }
+          ).join('');
+
+
+        lucide.createIcons();
+
+      },
+
+
+      /* =======================================================
+         PROJECT MODAL
+      ======================================================== */
+
+      openModalProject(
+        editData = null
+      ) {
+
+        const modal =
+          document.getElementById(
+            'modal-project'
+          );
+
+
+        const title =
+          document.getElementById(
+            'modal-project-title'
+          );
+
+
+        if (editData) {
+
+          title.innerText =
+            'Edit Proyek';
+
+
+          document.getElementById(
+            'project-id'
+          ).value =
+            editData.id ||
+            '';
+
+
+          document.getElementById(
+            'form-client-name'
+          ).value =
+            editData.clientName ||
+            '';
+
+
+          document.getElementById(
+            'form-event-name'
+          ).value =
+            editData.eventName ||
+            '';
+
+
+          document.getElementById(
+            'form-client-phone'
+          ).value =
+            editData.clientPhone ||
+            '';
+
+
+          document.getElementById(
+            'form-pin'
+          ).value =
+            editData.pin ||
+            '';
+
+
+          document.getElementById(
+            'form-selection-limit'
+          ).value =
+            (
+              editData.selectionLimit ===
+                null ||
+              editData.selectionLimit ===
+                undefined
+            )
+              ? ''
+              : editData.selectionLimit;
+
+        } else {
+
+          title.innerText =
+            'Buat Proyek Baru';
+
+
+          document.getElementById(
+            'project-id'
+          ).value =
+            '';
+
+
+          document.getElementById(
+            'form-client-name'
+          ).value =
+            '';
+
+
+          document.getElementById(
+            'form-event-name'
+          ).value =
+            '';
+
+
+          document.getElementById(
+            'form-client-phone'
+          ).value =
+            '';
+
+
+          this.generatePin();
+
+
+          document.getElementById(
+            'form-selection-limit'
+          ).value =
+            '';
+
+        }
+
+
+        modal.classList.remove(
+          'hidden'
+        );
+
+        modal.classList.add(
+          'flex'
+        );
+
+
+        lucide.createIcons();
+
+      },
+
+
+      closeModalProject() {
+
+        const modal =
+          document.getElementById(
+            'modal-project'
+          );
+
+
+        modal.classList.add(
+          'hidden'
+        );
+
+        modal.classList.remove(
+          'flex'
+        );
+
+      },
+
+
+      generatePin() {
+
+        document.getElementById(
+          'form-pin'
+        ).value =
+          utils.generatePin();
+
+      },
+
+
+      async handleSaveProject(
+        event
+      ) {
+
+        event.preventDefault();
+
+
+        const id =
+          document.getElementById(
+            'project-id'
+          ).value.trim();
+
+
+        const clientName =
+          document.getElementById(
+            'form-client-name'
+          ).value.trim();
+
+
+        const eventName =
+          document.getElementById(
+            'form-event-name'
+          ).value.trim();
+
+
+        const clientPhone =
+          document.getElementById(
+            'form-client-phone'
+          ).value.trim();
+
+
+        const pin =
+          document.getElementById(
+            'form-pin'
+          ).value.trim();
+
+
+        const limit =
+          document.getElementById(
+            'form-selection-limit'
+          ).value;
+
+
+        if (
+          !/^\d{6}$/.test(pin)
+        ) {
+
+          alert(
+            'PIN harus terdiri dari 6 angka.'
+          );
+
+          return;
+
+        }
+
+
+        const payload = {
+
+          clientName,
+
+          eventName,
+
+          clientPhone,
+
+          pin,
+
+          selectionLimit:
+            limit === ''
+              ? null
+              : Number(limit)
+
+        };
+
+
+        let result;
+
+
+        if (id) {
+
+          payload.id =
+            id;
+
+
+          result =
+            await apiCall(
+              'updateProject',
+              {},
+              'POST',
+              payload
+            );
+
+        } else {
+
+          result =
+            await apiCall(
+              'createProject',
+              {},
+              'POST',
+              payload
+            );
+
+        }
+
+
+        if (
+          result.ok
+        ) {
+
+          this.closeModalProject();
+
+          await this.loadAdminDashboard();
+
+        }
+
+      },
+
+
+      editProject(
+        id
+      ) {
+
+        const project =
+          state.projects.find(
+            item =>
+              String(item.id) ===
+              String(id)
+          );
+
+
+        if (project) {
+
+          this.openModalProject(
+            project
+          );
+
+        }
+
+      },
+
+
+      async deleteProject(
+        id
+      ) {
+
+        const project =
+          state.projects.find(
+            item =>
+              String(item.id) ===
+              String(id)
+          );
+
+
+        const name =
+          project
+            ? project.eventName
+            : 'proyek ini';
+
+
+        if (
+          !confirm(
+            `Hapus ${name}?\n\nData proyek di Google Sheets akan dihapus.`
+          )
+        ) {
+
+          return;
+
+        }
+
+
+        const result =
+          await apiCall(
+            'deleteProject',
+            {},
+            'POST',
+            {
+              id
+            }
+          );
+
+
+        if (
+          result.ok
+        ) {
+
+          await this.loadAdminDashboard();
+
+        }
+
+      },
+
+
+      /* =======================================================
+         MASS UPLOAD
+      ======================================================== */
+
+      async addPhotoManual() {
+
+        if (
+          !state.currentProject
+        ) {
+
+          alert(
+            'Silakan pilih proyek terlebih dahulu.'
+          );
+
+          return;
+
+        }
+
+
+        if (
+          state.isUploading
+        ) {
+
+          alert(
+            'Upload sedang berjalan.'
+          );
+
+          return;
+
+        }
+
+
+        const categoryInput =
+          document.getElementById(
+            'input-photo-category'
+          );
+
+
+        const category =
+          categoryInput.value.trim() ||
+          'Umum';
+
+
+        const input =
+          document.createElement(
+            'input'
+          );
+
+
+        input.type =
+          'file';
+
+
+        input.accept =
+          'image/jpeg,image/png,image/webp,image/heic,image/heif';
+
+
+        input.multiple =
+          true;
+
+
+        console.log(
+          'UPLOAD INPUT SIAP'
+        );
+
+
+        input.onchange =
+          async event => {
+
+            const files =
+              Array.from(
+                event.target.files
+              );
+
+
+            if (
+              files.length === 0
+            ) {
+
+              return;
+
+            }
+
+
+            const project =
+              state.currentProject;
+
+
+            if (
+              !confirm(
+                `Upload ${files.length} foto ke proyek "${project.eventName}"?\n\nKategori: ${category}`
+              )
+            ) {
+
+              return;
+
+            }
+
+
+            state.isUploading =
+              true;
+
+
+            this.setUploadProgress(
+              0,
+              files.length,
+              0,
+              'Menyiapkan upload...'
+            );
+
+
+            let success =
+              0;
+
+
+            let failed =
+              0;
+
+
+            try {
+
+              for (
+                let index = 0;
+                index < files.length;
+                index++
+              ) {
+
+                const file =
+                  files[index];
+
+
+                const current =
+                  index + 1;
+
+
+                this.setUploadProgress(
+                  current,
+                  files.length,
+                  Math.round(
+                    (index /
+                      files.length) *
+                    100
+                  ),
+                  file.name
+                );
+
+
+                try {
+
+                  const base64 =
+                    await this.fileToBase64(
+                      file
+                    );
+
+
+                  console.log(
+                    'MENGIRIM FOTO:',
+                    {
+                      projectId:
+                        project.id,
+                      fileName:
+                        file.name,
+                      mimeType:
+                        file.type
+                    }
+                  );
+
+
+                  const result =
+                    await apiCall(
+                      'uploadPhotoToDrive',
+                      {},
+                      'POST',
+                      {
+
+                        projectId:
+                          project.id,
+
+                        fileName:
+                          file.name,
+
+                        mimeType:
+                          file.type ||
+                          'image/jpeg',
+
+                        category,
+
+                        base64
+
+                      }
+                    );
+
+
+                  if (
+                    result.ok
+                  ) {
+
+                    success++;
+
+
+                    console.log(
+                      'UPLOAD BERHASIL:',
+                      result.data
+                    );
+
+                  } else {
+
+                    failed++;
+
+
+                    console.error(
+                      'UPLOAD GAGAL:',
+                      result
+                    );
+
+                  }
+
+
+                } catch (
+                  error
+                ) {
+
+                  console.error(
+                    'ASA PICKS UPLOAD ERROR:',
+                    error
+                  );
+
+
+                  failed++;
+
+                }
+
+
+                this.setUploadProgress(
+                  current,
+                  files.length,
+                  Math.round(
+                    (current /
+                      files.length) *
+                    100
+                  ),
+                  current ===
+                    files.length
+                    ? 'Finishing...'
+                    : file.name
+                );
+
+              }
+
+
+            } finally {
+
+              state.isUploading =
+                false;
+
+            }
+
+
+            this.setUploadProgress(
+              files.length,
+              files.length,
+              100,
+              'Upload selesai.'
+            );
+
+
+            alert(
+              `UPLOAD SELESAI\n\n` +
+              `Berhasil: ${success} foto\n` +
+              `Gagal: ${failed} foto`
+            );
+
+
+            /*
+              PENTING:
+              Setelah upload selesai,
+              langsung ambil ulang data foto
+              dari backend.
+            */
+
+            await this.loadAdminPhotosView(
+              state.currentProject
+            );
+
+
+            categoryInput.value =
+              '';
+
+
+            setTimeout(
+              () => {
+
+                this.hideUploadProgress();
+
+              },
+              1200
+            );
+
+          };
+
+
+        input.click();
+
+      },
+
+
+      fileToBase64(
+        file
+      ) {
+
+        return new Promise(
+          (
+            resolve,
+            reject
+          ) => {
+
+            const reader =
+              new FileReader();
+
+
+            reader.onload =
+              () => {
+
+                resolve(
+                  reader.result
+                );
+
+              };
+
+
+            reader.onerror =
+              () => {
+
+                reject(
+                  new Error(
+                    'Gagal membaca file.'
+                  )
+                );
+
+              };
+
+
+            reader.readAsDataURL(
+              file
+            );
+
+          }
+        );
+
+      },
+
+
+      setUploadProgress(
+        current,
+        total,
+        percent,
+        filename
+      ) {
+
+        const container =
+          document.getElementById(
+            'upload-progress-container'
+          );
+
+
+        if (!container) {
+          return;
+        }
+
+
+        container.classList.remove(
+          'hidden'
+        );
+
+
+        document.getElementById(
+          'upload-progress-text'
+        ).innerText =
+          `Mengunggah ${current} / ${total}`;
+
+
+        document.getElementById(
+          'upload-progress-percent'
+        ).innerText =
+          `${percent}%`;
+
+
+        document.getElementById(
+          'upload-progress-bar'
+        ).style.width =
+          `${percent}%`;
+
+
+        document.getElementById(
+          'upload-current-file'
+        ).innerText =
+          filename ||
+          '-';
+
+      },
+
+
+      hideUploadProgress() {
+
+        const container =
+          document.getElementById(
+            'upload-progress-container'
+          );
+
+
+        if (container) {
+
+          container.classList.add(
+            'hidden'
+          );
+
+        }
+
+      },
+
+
+      /* =======================================================
+         LIGHTBOX
+      ======================================================== */
+
+      openLightbox(
+        url,
+        caption = ''
+      ) {
+
+        if (!url) {
+
+          alert(
+            'URL foto tidak tersedia.'
+          );
+
+          return;
+
+        }
+
+
+        const modal =
+          document.getElementById(
+            'image-lightbox'
+          );
+
+
+        document.getElementById(
+          'lightbox-image'
+        ).src =
+          url;
+
+
+        document.getElementById(
+          'lightbox-caption'
+        ).innerText =
+          caption ||
+          'Foto';
+
+
+        modal.classList.remove(
+          'hidden'
+        );
+
+
+        modal.classList.add(
+          'flex'
+        );
+
+
+        lucide.createIcons();
+
+      },
+
+
+      closeLightbox() {
+
+        const modal =
+          document.getElementById(
+            'image-lightbox'
+          );
+
+
+        modal.classList.add(
+          'hidden'
+        );
+
+
+        modal.classList.remove(
+          'flex'
+        );
+
+
+        document.getElementById(
+          'lightbox-image'
+        ).src =
+          '';
+
+      }
+
+    };
+
+
+    /* =========================================================
+       GLOBAL LISTENERS
+    ========================================================== */
+
+    document.addEventListener(
+      'keydown',
+      event => {
+
+        if (
+          event.key ===
+          'Escape'
+        ) {
+
+          app.closeLightbox();
+
+          app.closeSuccessModal();
+
+          app.closeModalProject();
+
+        }
+
+      }
+    );
+
+
+    document.addEventListener(
+      'click',
+      event => {
+
+        if (
+          event.target ===
+          document.getElementById(
+            'image-lightbox'
+          )
+        ) {
+
+          app.closeLightbox();
+
+        }
+
+
+        if (
+          event.target ===
+          document.getElementById(
+            'success-modal'
+          )
+        ) {
+
+          app.closeSuccessModal();
+
+        }
+
+
+        if (
+          event.target ===
+          document.getElementById(
+            'modal-project'
+          )
+        ) {
+
+          app.closeModalProject();
+
+        }
+
+      }
+    );
+
+
+    /* =========================================================
+       DOM READY
+    ========================================================== */
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      () => {
+
+        const pinInput =
+          document.getElementById(
+            'client-pin'
+          );
+
+
+        if (pinInput) {
+
+          pinInput.addEventListener(
+            'input',
+            () => {
+
+              pinInput.value =
+                pinInput.value.replace(
+                  /\D/g,
+                  ''
+                );
+
+            }
+          );
+
+        }
+
+
+        app.init();
+
+      }
+    );
+
+  </script>
+
+</body>
+
+</html>
