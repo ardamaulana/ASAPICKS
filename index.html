@@ -647,33 +647,59 @@
         <!-- TABLE -->
 
         <div
-          class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+  class="px-5 py-4 border-b border-slate-100 flex items-center justify-between gap-4">
 
-          <div
-            class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+  <div class="min-w-0">
 
-            <div>
+    <h3 class="font-bold text-slate-900">
+      Daftar Proyek
+    </h3>
 
-              <h3 class="font-bold text-slate-900">
-                Daftar Proyek
-              </h3>
+    <p class="text-xs text-slate-400 mt-0.5">
+      Semua proyek ASA MOMENTS
+    </p>
 
-              <p class="text-xs text-slate-400 mt-0.5">
-                Semua proyek ASA MOMENTS
-              </p>
+  </div>
 
-            </div>
 
-            <button
-              type="button"
-              onclick="app.loadAdminDashboard()"
-              class="p-2 rounded-lg hover:bg-slate-100 text-slate-500 transition">
+  <div class="flex items-center gap-2 shrink-0">
 
-              <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+    <!-- SEARCH CLIENT -->
 
-            </button>
+    <div class="relative">
 
-          </div>
+      <i
+        data-lucide="search"
+        class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400">
+      </i>
+
+      <input
+        type="text"
+        id="project-search"
+        placeholder="Cari client..."
+        oninput="app.searchProjects(this.value)"
+        class="w-36 sm:w-44 pl-8 pr-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-700 placeholder:text-slate-400 outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition">
+
+    </div>
+
+
+    <!-- REFRESH -->
+
+    <button
+      type="button"
+      onclick="app.loadAdminDashboard()"
+      class="p-2 rounded-lg hover:bg-slate-100 text-slate-500 transition">
+
+      <i
+        data-lucide="refresh-cw"
+        class="w-4 h-4">
+      </i>
+
+    </button>
+
+  </div>
+
+</div>
 
 
           <div class="overflow-x-auto">
@@ -3050,13 +3076,77 @@
 
       },
 
+      searchProjects(keyword) {
 
-      renderProjectsTable() {
+  const search =
+    String(keyword || '')
+      .trim()
+      .toLowerCase();
 
-        const tbody =
-          document.getElementById(
-            'projects-table-body'
-          );
+
+  const rows =
+    document.querySelectorAll(
+      '#projects-table-body tr'
+    );
+
+
+  if (!search) {
+
+    this.renderProjectsTable();
+
+    return;
+
+  }
+
+
+  const filtered =
+    state.projects.filter(
+      project => {
+
+        const clientName =
+          String(
+            project.clientName || ''
+          ).toLowerCase();
+
+        const eventName =
+          String(
+            project.eventName || ''
+          ).toLowerCase();
+
+        const phone =
+          String(
+            project.clientPhone || ''
+          ).toLowerCase();
+
+        const pin =
+          String(
+            project.pin || ''
+          ).toLowerCase();
+
+
+        return (
+          clientName.includes(search) ||
+          eventName.includes(search) ||
+          phone.includes(search) ||
+          pin.includes(search)
+        );
+
+      }
+    );
+
+
+  this.renderProjectsTable(
+    filtered
+  );
+
+},
+
+      renderProjectsTable(projects = state.projects) {
+
+  const tbody =
+    document.getElementById(
+      'projects-table-body'
+    );
 
 
         if (!tbody) {
@@ -3071,9 +3161,9 @@
 
 
         if (
-          state.projects.length ===
-          0
-        ) {
+  projects.length ===
+  0
+) {
 
           tbody.innerHTML = `
 
@@ -3123,7 +3213,7 @@
 
 
         tbody.innerHTML =
-          state.projects.map(
+  projects.map(
             project => {
 
               const status =
@@ -3456,23 +3546,32 @@ ${
         const galleryUrl =
           window.location.href;
 
+        const selectionText =
+  project.selectionLimit === null ||
+  project.selectionLimit === undefined ||
+  project.selectionLimit === ''
+    ? 'tanpa batas'
+    : `maksimal ${project.selectionLimit} foto`;  
 
         const message =
-`Halo ${clientName} 👋
+`Halo ${clientName},
 
-Terima kasih sudah mempercayakan momen spesialnya kepada ASA MOMENTS 🤍
+Terima kasih sudah mempercayakan momen spesialnya kepada ASA MOMENTS.
 
-Foto-foto untuk ${eventName} sudah siap dan bisa mulai dipilih melalui galeri ASA PICKS 📸
+Foto-foto untuk ${eventName} sudah siap dan bisa mulai dipilih melalui galeri ASA PICKS.
 
-🔗 ${galleryUrl}
+Link Galeri:
+${galleryUrl}
 
-🔐 PIN Galeri: ${pin}
+PIN Galeri: ${pin}
 
-Silakan pilih foto favorit sesuai dengan jumlah foto yang sudah ditentukan ya Kak 😊
+Silakan pilih ${selectionText} dari galeri.
+
+Mohon pilih foto sesuai jumlah maksimal yang telah ditentukan ya Kak.
 
 Terima kasih dan selamat memilih foto!
 
-— ASA MOMENTS 📸`;
+— ASA MOMENTS`;
 
 
         const whatsappUrl =
