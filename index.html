@@ -1304,8 +1304,8 @@
   ========================================================== -->
 
   <div
-    id="image-lightbox"
-    class="fixed inset-0 z-[70] bg-slate-950/95 hidden items-center justify-center p-4">
+  id="image-lightbox"
+  class="fixed inset-0 z-[70] bg-black/95 hidden items-center justify-center">
 
     <button
       type="button"
@@ -1318,13 +1318,13 @@
 
 
     <div
-      class="max-w-6xl max-h-[90vh] w-full flex flex-col items-center justify-center">
+  class="relative w-screen h-screen flex items-center justify-center p-4">
 
       <img
-        id="lightbox-image"
-        src=""
-        alt="Preview"
-        class="max-w-full max-h-[78vh] object-contain rounded-xl shadow-2xl">
+  id="lightbox-image"
+  src=""
+  alt="Preview"
+  class="max-w-[96vw] max-h-[92vh] w-auto h-auto object-contain rounded-xl shadow-2xl">
 
       <div
         id="lightbox-caption"
@@ -2607,12 +2607,15 @@
                 );
 
 
-              const imageUrl =
-                utils.escapeHtml(
-                  utils.normalizePhotoUrl(
-                    photo.url
-                  )
-                );
+              const rawImageUrl =
+  utils.normalizePhotoUrl(
+    photo.url
+  );
+
+const imageUrl =
+  utils.escapeHtml(
+    rawImageUrl
+  );
 
 
               const category =
@@ -2669,15 +2672,26 @@
 
 
                   <button
-                    type="button"
-                    onclick="
-                      event.stopPropagation();
-                      app.openLightbox(
-                        ${JSON.stringify(imageUrl)},
-                        ${JSON.stringify(category)}
-                      )
-                    "
-                    class="absolute top-2.5 left-2.5 w-8 h-8 rounded-full bg-black/30 backdrop-blur text-white border border-white/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+  type="button"
+  data-photo-url="${imageUrl}"
+  data-photo-caption="${category}"
+  onclick="
+    event.preventDefault();
+    event.stopPropagation();
+    app.openLightbox(
+      this.dataset.photoUrl,
+      this.dataset.photoCaption
+    );
+    return false;
+  "
+  class="absolute top-2.5 left-2.5 z-30 w-9 h-9 rounded-full bg-black/70 backdrop-blur text-white border border-white/50 flex items-center justify-center opacity-100 cursor-pointer hover:bg-black hover:scale-105 transition-all">
+
+  <i
+    data-lucide="maximize-2"
+    class="w-4 h-4 pointer-events-none">
+  </i>
+
+</button>
 
                     <i
                       data-lucide="maximize-2"
