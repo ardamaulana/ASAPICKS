@@ -2439,8 +2439,8 @@
   'Semua',
   ...new Set(
     state.photos
-      .map(photo => photo.category)
-      .filter(Boolean)
+      .map(photo => photo.category || 'Umum')
+      .filter(category => category !== 'Umum')
   )
 ];
 
@@ -2609,9 +2609,11 @@ const imageUrl =
   );
 
 
-              const category = utils.escapeHtml(
-  photo.category ?? ''
-);
+              const category =
+  utils.escapeHtml(
+    photo.category ||
+    'Umum'
+  );
 
 
               return `
@@ -2690,12 +2692,16 @@ const imageUrl =
                   </button>
 
 
-                  <div
-                    class="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-lg bg-black/40 backdrop-blur text-[9px] text-white font-bold">
-
-                    ${category}
-
-                  </div>
+                  ${
+  category !== 'Umum'
+    ? `
+      <div
+        class="absolute bottom-2.5 left-2.5 px-2.5 py-1 rounded-lg bg-black/40 backdrop-blur text-[9px] text-white font-bold">
+        ${category}
+      </div>
+    `
+    : ''
+}
 
 
                   ${
@@ -4059,9 +4065,11 @@ openProjectDriveFolder() {
                 );
 
 
-              const category = utils.escapeHtml(
-  photo.category || ''
-);
+              const category =
+  utils.escapeHtml(
+    photo.category ||
+    'Umum'
+  );
 
 
               const photoId =
