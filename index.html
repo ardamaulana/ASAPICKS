@@ -4941,11 +4941,15 @@ openProjectDriveFolder() {
           url;
 
 
-        document.getElementById(
-          'lightbox-caption'
-        ).innerText =
-          caption ||
-          'Foto';
+       const captionEl = document.getElementById('lightbox-caption');
+
+if (caption && caption !== 'Umum') {
+  captionEl.innerText = caption;
+  captionEl.style.display = '';
+} else {
+  captionEl.innerText = '';
+  captionEl.style.display = 'none';
+}
 
 
         modal.classList.remove(
