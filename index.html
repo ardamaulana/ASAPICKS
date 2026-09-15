@@ -2436,18 +2436,13 @@
 
 
         const categories = [
-
-          'Semua',
-
-          ...new Set(
-            state.photos.map(
-              photo =>
-                photo.category ||
-                'Umum'
-            )
-          )
-
-        ];
+  'Semua',
+  ...new Set(
+    state.photos
+      .map(photo => photo.category)
+      .filter(Boolean)
+  )
+];
 
 
         container.innerHTML =
@@ -2553,20 +2548,16 @@
 
 
         const filtered =
-          state.activeCategory ===
-          'Semua'
+  state.activeCategory ===
+  'Semua'
 
-            ? state.photos
+    ? state.photos
 
-            : state.photos.filter(
-                photo =>
-                  (
-                    photo.category ||
-                    'Umum'
-                  ) ===
-                  state.activeCategory
-              );
-
+    : state.photos.filter(
+        photo =>
+          photo.category ===
+          state.activeCategory
+      );
 
         if (
           filtered.length === 0
@@ -2618,11 +2609,9 @@ const imageUrl =
   );
 
 
-              const category =
-                utils.escapeHtml(
-                  photo.category ||
-                  'Umum'
-                );
+              const category = utils.escapeHtml(
+  photo.category ?? ''
+);
 
 
               return `
@@ -4070,11 +4059,9 @@ openProjectDriveFolder() {
                 );
 
 
-              const category =
-                utils.escapeHtml(
-                  photo.category ||
-                  'Umum'
-                );
+              const category = utils.escapeHtml(
+  photo.category || ''
+);
 
 
               const photoId =
@@ -4533,9 +4520,7 @@ openProjectDriveFolder() {
           );
 
 
-        const category =
-          categoryInput.value.trim() ||
-          'Umum';
+        const category = categoryInput.value.trim();
 
 
         const input =
