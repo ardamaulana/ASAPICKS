@@ -703,8 +703,6 @@
 
       <option value="newest">Terbaru</option>
       <option value="oldest">Terlama</option>
-      <option value="name-az">Nama Klien A–Z</option>
-      <option value="name-za">Nama Klien Z–A</option>
 
     </select>
 
@@ -727,15 +725,7 @@
 
 </div>
 
-          <!-- FILTER A-Z -->
-<div class="px-5 py-3 border-b border-slate-100 bg-white">
 
-  <div
-    id="alphabet-filter"
-    class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar">
-  </div>
-
-</div>
           <div class="overflow-x-auto">
 
             <table
@@ -3221,35 +3211,15 @@ const imageUrl =
 
         filtered.sort((a, b) => {
 
-  if (sortOrder === 'name-az') {
-    return String(a.clientName || '')
-      .localeCompare(
-        String(b.clientName || ''),
-        'id',
-        { sensitivity: 'base' }
-      );
-  }
+          const dateA = new Date(a.eventDate || a.createdAt || 0).getTime() || 0;
+          const dateB = new Date(b.eventDate || b.createdAt || 0).getTime() || 0;
 
-  if (sortOrder === 'name-za') {
-    return String(b.clientName || '')
-      .localeCompare(
-        String(a.clientName || ''),
-        'id',
-        { sensitivity: 'base' }
-      );
-  }
+          return sortOrder === 'oldest'
+            ? dateA - dateB
+            : dateB - dateA;
 
-  const dateA =
-    new Date(a.eventDate || a.createdAt || 0).getTime() || 0;
+        });
 
-  const dateB =
-    new Date(b.eventDate || b.createdAt || 0).getTime() || 0;
-
-  return sortOrder === 'oldest'
-    ? dateA - dateB
-    : dateB - dateA;
-
-});
 
         this.renderProjectsTable(filtered);
 
