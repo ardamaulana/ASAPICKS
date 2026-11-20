@@ -662,7 +662,7 @@
   </div>
 
 
-  <div class="flex items-center gap-2 shrink-0">
+  <div class="flex items-center gap-2 shrink-0 flex-wrap justify-end">
 
     <!-- SEARCH CLIENT -->
 
@@ -681,6 +681,30 @@
         class="w-36 sm:w-44 pl-8 pr-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-700 placeholder:text-slate-400 outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition">
 
     </div>
+
+
+    <!-- FILTER TANGGAL -->
+
+    <input
+      type="date"
+      id="project-date-filter"
+      aria-label="Filter tanggal proyek"
+      onchange="app.filterProjects()"
+      class="px-2.5 py-2 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-700 outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition">
+
+
+    <!-- URUTKAN TANGGAL -->
+
+    <select
+      id="project-sort-order"
+      aria-label="Urutkan proyek berdasarkan tanggal"
+      onchange="app.filterProjects()"
+      class="px-2.5 py-2 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-700 outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition">
+
+      <option value="newest">Terbaru</option>
+      <option value="oldest">Terlama</option>
+
+    </select>
 
 
     <!-- REFRESH -->
@@ -718,6 +742,10 @@
 
                   <th class="py-3.5 px-4">
                     Klien
+                  </th>
+
+                  <th class="py-3.5 px-4">
+                    Tanggal
                   </th>
 
                   <th class="py-3.5 px-4">
@@ -1178,6 +1206,31 @@
             required
             placeholder="Contoh: Wedding Day"
             class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-4 focus:ring-indigo-100 focus:border-indigo-600 outline-none">
+
+        </div>
+
+
+        <!-- EVENT DATE -->
+
+        <div>
+
+          <label
+            for="form-event-date"
+            class="block text-xs font-bold text-slate-600 mb-1.5">
+
+            Tanggal Event / Pemotretan
+
+          </label>
+
+          <input
+            type="date"
+            id="form-event-date"
+            required
+            class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:ring-4 focus:ring-indigo-100 focus:border-indigo-600 outline-none">
+
+          <p class="text-[10px] text-slate-400 mt-1.5">
+            Pilih tanggal pelaksanaan event agar proyek mudah dicari melalui filter tanggal.
+          </p>
 
         </div>
 
@@ -3019,7 +3072,7 @@ const imageUrl =
 
         this.renderAdminStats();
 
-        this.renderProjectsTable();
+        this.filterProjects();
 
         lucide.createIcons();
 
@@ -3087,68 +3140,90 @@ const imageUrl =
 
       searchProjects(keyword) {
 
-  const search =
-    String(keyword || '')
-      .trim()
-      .toLowerCase();
+        this.filterProjects();
+
+      },
 
 
-  const rows =
-    document.querySelectorAll(
-      '#projects-table-body tr'
-    );
+      filterProjects() {
 
-
-  if (!search) {
-
-    this.renderProjectsTable();
-
-    return;
-
-  }
-
-
-  const filtered =
-    state.projects.filter(
-      project => {
-
-        const clientName =
+        const search =
           String(
-            project.clientName || ''
-          ).toLowerCase();
+            document.getElementById('project-search')?.value || ''
+          )
+            .trim()
+            .toLowerCase();
 
-        const eventName =
-          String(
-            project.eventName || ''
-          ).toLowerCase();
+        const selectedDate =
+          document.getElementById('project-date-filter')?.value || '';
 
-        const phone =
-          String(
-            project.clientPhone || ''
-          ).toLowerCase();
-
-        const pin =
-          String(
-            project.pin || ''
-          ).toLowerCase();
+        const sortOrder =
+          document.getElementById('project-sort-order')?.value || 'newest';
 
 
-        return (
-          clientName.includes(search) ||
-          eventName.includes(search) ||
-          phone.includes(search) ||
-          pin.includes(search)
-        );
+        const getDateKey = value => {
 
-      }
-    );
+          if (!value) return '';
+
+          const date = new Date(value);
+
+          if (Number.isNaN(date.getTime())) return '';
+
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+
+          return `${year}-${month}-${day}`;
+
+        };
 
 
-  this.renderProjectsTable(
-    filtered
-  );
+        const filtered =
+          state.projects.filter(project => {
 
-},
+            const clientName =
+              String(project.clientName || '').toLowerCase();
+
+            const eventName =
+              String(project.eventName || '').toLowerCase();
+
+            const phone =
+              String(project.clientPhone || '').toLowerCase();
+
+            const pin =
+              String(project.pin || '').toLowerCase();
+
+            const matchesSearch =
+              !search ||
+              clientName.includes(search) ||
+              eventName.includes(search) ||
+              phone.includes(search) ||
+              pin.includes(search);
+
+            const matchesDate =
+              !selectedDate ||
+              getDateKey(project.eventDate || project.createdAt) === selectedDate;
+
+            return matchesSearch && matchesDate;
+
+          });
+
+
+        filtered.sort((a, b) => {
+
+          const dateA = new Date(a.eventDate || a.createdAt || 0).getTime() || 0;
+          const dateB = new Date(b.eventDate || b.createdAt || 0).getTime() || 0;
+
+          return sortOrder === 'oldest'
+            ? dateA - dateB
+            : dateB - dateA;
+
+        });
+
+
+        this.renderProjectsTable(filtered);
+
+      },
 
       renderProjectsTable(projects = state.projects) {
 
@@ -3179,7 +3254,7 @@ const imageUrl =
             <tr>
 
               <td
-                colspan="6"
+                colspan="7"
                 class="py-16 px-6 text-center">
 
                 <div
@@ -3323,6 +3398,18 @@ const imageUrl =
                       )}
 
                     </div>
+
+                  </td>
+
+
+                  <!-- TANGGAL -->
+
+                  <td
+                    class="py-4 px-4 text-xs font-medium text-slate-600 whitespace-nowrap">
+
+                    ${utils.escapeHtml(
+                      utils.formatDate(project.eventDate || project.createdAt)
+                    )}
 
                   </td>
 
@@ -4190,6 +4277,13 @@ openProjectDriveFolder() {
 
 
           document.getElementById(
+            'form-event-date'
+          ).value =
+            editData.eventDate ||
+            '';
+
+
+          document.getElementById(
             'form-client-phone'
           ).value =
             editData.clientPhone ||
@@ -4237,6 +4331,16 @@ openProjectDriveFolder() {
             'form-event-name'
           ).value =
             '';
+
+
+          const today = new Date();
+          const localToday =
+            `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+          document.getElementById(
+            'form-event-date'
+          ).value =
+            localToday;
 
 
           document.getElementById(
@@ -4324,6 +4428,12 @@ openProjectDriveFolder() {
           ).value.trim();
 
 
+        const eventDate =
+          document.getElementById(
+            'form-event-date'
+          ).value;
+
+
         const clientPhone =
           document.getElementById(
             'form-client-phone'
@@ -4360,6 +4470,8 @@ openProjectDriveFolder() {
           clientName,
 
           eventName,
+
+          eventDate,
 
           clientPhone,
 
